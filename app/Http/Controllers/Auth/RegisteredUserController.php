@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Owner;
+use App\Models\Tenant;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,19 +35,53 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['nullable', 'string', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'in:tenant,owner'],
+            'terms' => ['required', 'accepted'],
         ]);
 
+        // Buat user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            'role' => $request->role, // Set kolom role di users
         ]);
+
+        // Assign role menggunakan Spatie Permission
+        $user->assignRole($request->role);
+
+        // Jika role owner, buat record di tabel owners
+        if ($request->role === 'owner') {
+            Owner::create([
+                'user_id' => $user->id,
+                'verification_status' => 'pending',
+                'verified_at' => null,
+            ]);
+        }
+
+        // Jika role tenant, buat record di tabel tenants
+        if ($request->role === 'tenant') {
+            Tenant::create([
+                'user_id' => $user->id,
+                'occupation' => null,
+                'gender' => null,
+            ]);
+        }
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Redirect berdasarkan role
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->hasRole('owner')) {
+            return redirect()->route('owner.dashboard');
+        } else {
+            return redirect()->route('tenant.dashboard');
+        }
     }
 }

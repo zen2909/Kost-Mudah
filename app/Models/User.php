@@ -5,103 +5,68 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
-        'password',
         'phone',
         'role',
         'photo',
+        'password',
+        'email_verified_at',
+        'phone_verified_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'phone_verified_at' => 'datetime',
-    ];
-
-    /**
-     * Relasi ke data tenant (jika role = 'tenant')
-     */
-    public function tenant()
+    protected function casts(): array
     {
-        return $this->hasOne(Tenant::class);
+        return [
+            'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 
-    /**
-     * Relasi ke data owner (jika role = 'owner')
-     */
+    // Relasi ke owner
     public function owner()
     {
         return $this->hasOne(Owner::class);
     }
 
-    /**
-     * Cek apakah user adalah admin
-     */
+    // Relasi ke tenant
+    public function tenant()
+    {
+        return $this->hasOne(Tenant::class);
+    }
+
+    // Relasi ke boarding houses (untuk owner)
+    public function boardingHouses()
+    {
+        return $this->hasMany(BoardingHouse::class, 'user_id');
+    }
+
+    // Helper methods
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' || $this->hasRole('admin');
     }
 
-    /**
-     * Cek apakah user adalah owner (pemilik kost)
-     */
     public function isOwner(): bool
     {
-        return $this->role === 'owner';
+        return $this->role === 'owner' || $this->hasRole('owner');
     }
 
-    /**
-     * Cek apakah user adalah tenant (penyewa)
-     */
     public function isTenant(): bool
     {
-        return $this->role === 'tenant';
-    }
-
-    /**
-     * Scope untuk filter berdasarkan role
-     */
-    public function scopeRole($query, $role)
-    {
-        return $query->where('role', $role);
-    }
-
-    /**
-     * Accessor untuk foto profil (dengan fallback avatar)
-     */
-    public function getPhotoUrlAttribute(): string
-    {
-        if ($this->photo && file_exists(storage_path('app/public/'.$this->photo))) {
-            return asset('storage/'.$this->photo);
-        }
-
-        // Fallback: avatar dari ui-avatars.com
-        return 'https://ui-avatars.com/api/?background=0D8ABC&color=fff&name='.urlencode($this->name);
+        return $this->role === 'tenant' || $this->hasRole('tenant');
     }
 }
