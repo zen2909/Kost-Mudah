@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class BoardingHouse extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'owner_id', 'slug', 'name', 'address', 'kelurahan', 'latitude', 'longitude',
+        'user_id', 'slug', 'name', 'address', 'kelurahan', 'latitude', 'longitude',
         'type', 'price_per_month', 'total_rooms', 'available_rooms', 'description',
         'rules', 'facilities', 'status',
     ];
@@ -21,10 +22,16 @@ class BoardingHouse extends Model
         'longitude' => 'decimal:8',
     ];
 
-    // Relasi ke owner
+    // Relasi ke user (owner)
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Relasi ke owner (melalui user_id)
     public function owner()
     {
-        return $this->belongsTo(Owner::class);
+        return $this->belongsTo(Owner::class, 'user_id', 'user_id');
     }
 
     // Relasi ke foto
@@ -39,7 +46,7 @@ class BoardingHouse extends Model
         return $this->hasOne(BoardingHousePhoto::class)->where('is_primary', true);
     }
 
-    // Relasi ke rentals
+    // Relasi ke rentals (penyewaan)
     public function rentals()
     {
         return $this->hasMany(Rental::class);
@@ -67,5 +74,11 @@ class BoardingHouse extends Model
     public function isAvailable()
     {
         return $this->available_rooms > 0 && $this->status === 'active';
+    }
+
+    // Scope untuk owner yang sedang login
+    public function scopeForOwner($query)
+    {
+        return $query->where('user_id', Auth::id());
     }
 }

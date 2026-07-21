@@ -10,7 +10,17 @@ class Tenant extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'occupation', 'gender',
+        'user_id', 
+        'occupation', 
+        'gender',
+        'verification_status',
+        'verified_at',
+        'identity_number',
+        'identity_photo',
+    ];
+
+    protected $casts = [
+        'verified_at' => 'datetime',
     ];
 
     // Relasi ke user
@@ -42,5 +52,23 @@ class Tenant extends Model
     {
         return $this->belongsToMany(BoardingHouse::class, 'favorites', 'tenant_id', 'boarding_house_id')
             ->withTimestamps();
+    }
+
+    // Cek apakah tenant sudah terverifikasi
+    public function isVerified()
+    {
+        return $this->verification_status === 'verified';
+    }
+
+    // Scope untuk tenant yang sudah terverifikasi
+    public function scopeVerified($query)
+    {
+        return $query->where('verification_status', 'verified');
+    }
+
+    // Scope untuk tenant yang pending
+    public function scopePending($query)
+    {
+        return $query->where('verification_status', 'pending');
     }
 }
