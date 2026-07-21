@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('available_rooms');
             $table->text('description')->nullable();
             $table->text('rules')->nullable();
-            $table->json('facilities')->nullable();
+            $table->json('facil ities')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
