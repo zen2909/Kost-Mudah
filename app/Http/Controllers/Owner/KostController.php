@@ -28,7 +28,7 @@ class KostController extends Controller
         $occupancyRate = $totalRooms > 0 ? round(($totalRooms - $totalAvailable) / $totalRooms * 100) : 0;
         $expiringSoon = 3;
         
-        return view('owner.kost', compact(
+        return view('owner.kost.index', compact(
             'boardingHouses',
             'totalUnits',
             'totalAvailable',

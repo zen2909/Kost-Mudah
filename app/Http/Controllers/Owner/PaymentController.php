@@ -82,7 +82,7 @@ class PaymentController extends Controller
         // Ambil daftar properti untuk filter (opsional bisa ditambahkan)
         $properties = BoardingHouse::where('user_id', Auth::id())->get();
         
-        return view('owner.payment', compact(
+        return view('owner.payment.index', compact(
             'payments',
             'totalPayments',
             'pendingPayments',

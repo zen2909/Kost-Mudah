@@ -64,6 +64,11 @@ class BoardingHouse extends Model
         return $this->hasMany(Favorite::class);
     }
 
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+    
     // Rata-rata rating
     public function averageRating()
     {

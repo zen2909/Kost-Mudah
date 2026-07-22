@@ -1,8 +1,20 @@
 <?php
 
-use App\Http\Controllers\Owner\DocumentController as OwnerDocumentController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\KostController as AdminKostController;
+use App\Http\Controllers\Admin\OwnerController as AdminOwnerController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\TenantController as AdminTenantController;
+use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
+use App\Http\Controllers\Admin\AdminVerificationOwnerController;
+use App\Http\Controllers\Admin\AdminVerificationKostController;
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\Owner\KostController as OwnerKostController;
+use App\Http\Controllers\Owner\KostVerificationController;
 use App\Http\Controllers\Owner\OwnerController;
+use App\Http\Controllers\Owner\OwnerVerificationController;
 use App\Http\Controllers\Owner\PaymentController as OwnerPaymentController;
 use App\Http\Controllers\Owner\ProfileController as OwnerProfileController;
 use App\Http\Controllers\Owner\ReportController as OwnerReportController;
@@ -12,23 +24,63 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Route untuk guest (belum login)
-Route::get('/', function () {
-    return redirect('login');
-});
+Route::get('/', [GuestController::class, 'index'])->name('guest.home');
 
 // Route yang membutuhkan auth dan role spesifik
 Route::middleware('auth')->group(function () {
 
     // Route Admin - hanya untuk role admin
-    Route::middleware(['role:admin'])->prefix('admin')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.index');
-        })->name('admin.dashboard');
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
-        // Route admin lainnya
-        Route::get('/users', function () {
-            return view('admin.users');
-        })->name('admin.users');
+        Route::prefix('verification')->name('verification.')->group(function () {
+
+        Route::prefix('owner')->name('owner.')->group(function () {
+            Route::get('/', [AdminVerificationOwnerController::class, 'index'])->name('index');
+            Route::get('/search', [AdminVerificationOwnerController::class, 'search'])->name('search');
+            Route::get('/documents/{id}', [AdminVerificationOwnerController::class, 'show'])->name('show');
+            Route::post('/documents/{id}/verify', [AdminVerificationOwnerController::class, 'verify'])->name('verify');
+        });
+
+        // Verifikasi Data Kost
+        Route::prefix('kost')->name('kost.')->group(function () {
+            Route::get('/', [AdminVerificationKostController::class, 'index'])->name('index');
+            Route::get('/search', [AdminVerificationKostController::class, 'search'])->name('search');
+            Route::get('/documents/{id}', [AdminVerificationKostController::class, 'show'])->name('show');
+            Route::post('/documents/{id}/verify', [AdminVerificationKostController::class, 'verify'])->name('verify');
+        });
+    });
+
+        // === Halaman Manajemen Pemilik ===
+        Route::get('/owners', [AdminOwnerController::class, 'index'])->name('owners.index');
+    Route::get('/owners/{id}', [AdminOwnerController::class, 'show'])->name('owners.show');
+    Route::delete('/owners/{id}', [AdminOwnerController::class, 'destroy'])->name('owners.destroy');
+        
+        // Kost routes
+        Route::get('/kost', [AdminKostController::class, 'index'])->name('kost.index');
+    Route::get('/kost/{id}', [AdminKostController::class, 'show'])->name('kost.show');
+    Route::delete('/kost/{id}', [AdminKostController::class, 'destroy'])->name('kost.destroy');
+
+        // Tenant routes
+         Route::get('/penyewa', [AdminTenantController::class, 'index'])->name('penyewa.index');
+    Route::get('/penyewa/{id}', [AdminTenantController::class, 'show'])->name('penyewa.show');
+
+        // Transaction routes
+        Route::get('/transaksi', [AdminTransactionController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/{id}', [AdminTransactionController::class, 'show'])->name('transaksi.show');
+
+        // Report routes
+        Route::get('/laporan', [AdminReportController::class, 'index'])->name('laporan.index');
+
+        // Profile routes
+        Route::get('/profile', [AdminProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/photo', [AdminProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
+    Route::delete('/profile/photo', [AdminProfileController::class, 'removePhoto'])->name('profile.removePhoto');
+    Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+
+        // Setting routes
+        Route::get('/pengaturan', [AdminSettingController::class, 'index'])->name('pengaturan.index');
     });
 
     // Route Owner - hanya untuk role owner
@@ -63,23 +115,29 @@ Route::middleware('auth')->group(function () {
         // Report Management
         Route::get('/report', [OwnerReportController::class, 'index'])->name('report.index');
 
-        // Document Verification
-        Route::resource('document', OwnerDocumentController::class)->names([
-            'index' => 'document.index',
-            'create' => 'document.create',
-            'store' => 'document.store',
-            'show' => 'document.show',
-            'edit' => 'document.edit',
-            'update' => 'document.update',
-            'destroy' => 'document.destroy',
-        ]);
+        // ============================================
+        // VERIFICATION ROUTES
+        // ============================================
+        Route::prefix('verification')->name('verification.')->group(function () {
 
-        Route::get('/document', [OwnerDocumentController::class, 'index'])->name('document.index');
-        Route::post('/document', [OwnerDocumentController::class, 'store'])->name('document.store');
-        Route::get('/document/{id}', [OwnerDocumentController::class, 'show'])->name('document.show');
-        Route::put('/document/{id}', [OwnerDocumentController::class, 'update'])->name('document.update');
-        Route::delete('/document/{id}', [OwnerDocumentController::class, 'destroy'])->name('document.destroy');
+            // Verifikasi Data Diri (KTP)
+            Route::prefix('identity')->name('identity.')->group(function () {
+                Route::get('/', [OwnerVerificationController::class, 'index'])->name('index');
+                Route::post('/', [OwnerVerificationController::class, 'store'])->name('store');
+                Route::get('/{id}', [OwnerVerificationController::class, 'show'])->name('show');
+                Route::delete('/{id}', [OwnerVerificationController::class, 'destroy'])->name('destroy');
+            });
 
+            // Verifikasi Data Kost
+            Route::prefix('kost')->name('kost.')->group(function () {
+                Route::get('/', [KostVerificationController::class, 'index'])->name('index');
+                Route::post('/', [KostVerificationController::class, 'store'])->name('store');
+                Route::get('/{id}', [KostVerificationController::class, 'show'])->name('show');
+                Route::delete('/{id}', [KostVerificationController::class, 'destroy'])->name('destroy');
+            });
+        });
+
+        // Profile
         Route::get('/profile', [OwnerProfileController::class, 'index'])->name('profile.index');
         Route::put('/profile', [OwnerProfileController::class, 'update'])->name('profile.update');
         Route::post('/profile/photo', [OwnerProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');

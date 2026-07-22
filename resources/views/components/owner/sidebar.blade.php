@@ -14,7 +14,7 @@
             <!-- Logo Text -->
             <div class="logo-text transition-all duration-300 overflow-hidden whitespace-nowrap" style="min-width: 0;">
                 <p class="text-white font-bold text-xl leading-7">KostMudah</p>
-                <p class="text-[#7390A9] text-[10px] font-bold uppercase tracking-wider leading-[15px]">MANAGEMENT</p>
+                <p class="text-[#7390A9] text-[10px] font-bold uppercase tracking-wider leading-[15px]">Owner Panel</p>
             </div>
         </div>
     </div>
@@ -137,22 +137,41 @@
                 </span>
             </a>
 
-            <!-- Verifikasi Dokumen -->
-            <a href="{{ route('owner.document.index') }}"
-                class="group-item flex items-center px-3 py-3 rounded-lg transition-all duration-200 gap-3 relative {{ request()->routeIs('owner.document.*') ? 'bg-white/10' : 'hover:bg-white/5' }}">
-                <svg class="w-[22px] h-4 flex-shrink-0 {{ request()->routeIs('owner.document.*') ? 'text-white' : 'text-[#7390A9]/70' }}"
+            <!-- Verifikasi Data Diri -->
+            <a href="{{ route('owner.verification.identity.index') }}"
+                class="group-item flex items-center px-3 py-3 rounded-lg transition-all duration-200 gap-3 relative {{ request()->routeIs('owner.verification.identity.*') ? 'bg-white/10' : 'hover:bg-white/5' }}">
+                <svg class="w-[22px] h-4 flex-shrink-0 {{ request()->routeIs('owner.verification.identity.*') ? 'text-white' : 'text-[#7390A9]/70' }}"
                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                 </svg>
                 <span
-                    class="menu-text text-sm transition-all duration-300 whitespace-nowrap overflow-hidden {{ request()->routeIs('owner.document.*') ? 'text-white' : 'text-[#7390A9]/70' }}">
-                    Verifikasi Dokumen
+                    class="menu-text text-sm transition-all duration-300 whitespace-nowrap overflow-hidden {{ request()->routeIs('owner.verification.identity.*') ? 'text-white' : 'text-[#7390A9]/70' }}">
+                    Verifikasi Data Diri
                 </span>
                 <span
                     class="hidden absolute left-[56px] bg-[#001220] text-white text-xs px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap pointer-events-none z-50
-                    before:content-[''] before:absolute before:-left-1.5 before:top-1/2 before:-translate-y-1/2 before:border-[6px] before:border-transparent before:border-r-[#001220]">
-                    Verifikasi Dokumen
+        before:content-[''] before:absolute before:-left-1.5 before:top-1/2 before:-translate-y-1/2 before:border-[6px] before:border-transparent before:border-r-[#001220]">
+                    Verifikasi Data Diri
+                </span>
+            </a>
+
+            <!-- Verifikasi Data Kost -->
+            <a href="{{ route('owner.verification.kost.index') }}"
+                class="group-item flex items-center px-3 py-3 rounded-lg transition-all duration-200 gap-3 relative {{ request()->routeIs('owner.verification.kost.*') ? 'bg-white/10' : 'hover:bg-white/5' }}">
+                <svg class="w-[22px] h-4 flex-shrink-0 {{ request()->routeIs('owner.verification.kost.*') ? 'text-white' : 'text-[#7390A9]/70' }}"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span
+                    class="menu-text text-sm transition-all duration-300 whitespace-nowrap overflow-hidden {{ request()->routeIs('owner.verification.kost.*') ? 'text-white' : 'text-[#7390A9]/70' }}">
+                    Verifikasi Data Kost
+                </span>
+                <span
+                    class="hidden absolute left-[56px] bg-[#001220] text-white text-xs px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap pointer-events-none z-50
+        before:content-[''] before:absolute before:-left-1.5 before:top-1/2 before:-translate-y-1/2 before:border-[6px] before:border-transparent before:border-r-[#001220]">
+                    Verifikasi Data Kost
                 </span>
             </a>
         </div>

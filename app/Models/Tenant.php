@@ -13,14 +13,6 @@ class Tenant extends Model
         'user_id', 
         'occupation', 
         'gender',
-        'verification_status',
-        'verified_at',
-        'identity_number',
-        'identity_photo',
-    ];
-
-    protected $casts = [
-        'verified_at' => 'datetime',
     ];
 
     // Relasi ke user
@@ -32,7 +24,7 @@ class Tenant extends Model
     // Relasi ke rentals (penyewaan)
     public function rentals()
     {
-        return $this->hasMany(Rental::class);
+        return $this->hasMany(Rental::class, 'tenant_id');
     }
 
     // Relasi ke reviews
@@ -54,6 +46,27 @@ class Tenant extends Model
             ->withTimestamps();
     }
 
+    // Get verification status from documents
+    public function getVerificationStatusAttribute()
+    {
+        $user = $this->user;
+        if (!$user) {
+            return 'unverified';
+        }
+
+        // Cek apakah user memiliki dokumen yang terverifikasi
+        if ($user->documents()->where('status', 'verified')->exists()) {
+            return 'verified';
+        }
+        
+        // Cek apakah user memiliki dokumen yang pending
+        if ($user->documents()->where('status', 'pending')->exists()) {
+            return 'pending';
+        }
+        
+        return 'unverified';
+    }
+
     // Cek apakah tenant sudah terverifikasi
     public function isVerified()
     {
@@ -63,12 +76,24 @@ class Tenant extends Model
     // Scope untuk tenant yang sudah terverifikasi
     public function scopeVerified($query)
     {
-        return $query->where('verification_status', 'verified');
+        return $query->whereHas('user.documents', function ($q) {
+            $q->where('status', 'verified');
+        });
     }
 
     // Scope untuk tenant yang pending
     public function scopePending($query)
     {
-        return $query->where('verification_status', 'pending');
+        return $query->whereHas('user.documents', function ($q) {
+            $q->where('status', 'pending');
+        });
+    }
+
+    // Scope untuk tenant yang belum verifikasi
+    public function scopeUnverified($query)
+    {
+        return $query->whereDoesntHave('user.documents', function ($q) {
+            $q->whereIn('status', ['verified', 'pending']);
+        });
     }
 }

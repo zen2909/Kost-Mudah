@@ -17,6 +17,8 @@ class Payment extends Model
         'notes',
         'status', // pending, verified, rejected
         'verified_at',
+        'verified_by',
+        'rejection_reason',
     ];
 
     protected $casts = [
@@ -27,6 +29,12 @@ class Payment extends Model
     public function rental()
     {
         return $this->belongsTo(Rental::class);
+    }
+
+    // Relasi ke user (admin) yang memverifikasi
+    public function verifiedBy()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 
     // Helper status
