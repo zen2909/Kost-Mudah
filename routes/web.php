@@ -81,6 +81,9 @@ Route::middleware('auth')->group(function () {
 
         // Setting routes
         Route::get('/pengaturan', [AdminSettingController::class, 'index'])->name('pengaturan.index');
+    Route::put('/pengaturan', [AdminSettingController::class, 'update'])->name('pengaturan.update');
+    Route::post('/pengaturan/logo', [AdminSettingController::class, 'uploadLogo'])->name('pengaturan.uploadLogo');
+    Route::delete('/pengaturan/logo', [AdminSettingController::class, 'removeLogo'])->name('pengaturan.removeLogo');
     });
 
     // Route Owner - hanya untuk role owner
