@@ -23,16 +23,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
-        
-        // Debug logging
-        Log::info('User logged in:', [
-            'user_id' => $user->id,
-            'email' => $user->email,
-            'roles' => $user->roles->pluck('name')->toArray(),
-            'has_role_owner' => $user->hasRole('owner'),
-            'has_role_admin' => $user->hasRole('admin'),
-            'has_role_tenant' => $user->hasRole('tenant'),
-        ]);
 
         // Redirect berdasarkan role
         if ($user->hasRole('owner')) {
@@ -52,7 +42,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         
-        return redirect()->route('login')->with('error', 'Akun Anda tidak memiliki role.');
+        return redirect()->route('guest.home')->with('error', 'Akun Anda tidak memiliki role.');
     }
 
     public function destroy(Request $request): RedirectResponse

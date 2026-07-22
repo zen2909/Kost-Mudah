@@ -66,7 +66,7 @@ class TenantController extends Controller
         
         $properties = BoardingHouse::where('user_id', Auth::id())->get();
         
-        return view('owner.tenant', compact(
+        return view('owner.penyewa.index', compact(
             'rentals',
             'totalRentals',
             'paidRentals',

@@ -83,10 +83,10 @@ class Document extends Model
     public function getDocumentTypeLabelAttribute()
     {
         $types = [
-            'ktp' => 'Kartu Tanda Penduduk',
-            'imb' => 'IMB (Izin Mendirikan Bangunan)',
-            'pbb' => 'PBB (Pajak Bumi Bangunan)',
-            'sertifikat' => 'Sertifikat Properti',
+            'ktp' => 'KTP',
+            'imb' => 'IMB',
+            'pbb' => 'PBB',
+            'sertifikat' => 'Sertifikat',
             'akta' => 'Akta Tanah',
             'other' => 'Lainnya',
         ];

@@ -1,6 +1,6 @@
 @extends('layouts.owner')
 
-@section('title', 'Detail Dokumen - KostMudah')
+@section('title', 'Detail KTP - KostMudah')
 
 @section('content')
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
@@ -12,10 +12,10 @@
                     <div class="w-10 h-10 rounded-lg bg-[#06283D] flex items-center justify-center text-white">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                         </svg>
                     </div>
-                    <h2 class="text-[#001220] text-xl font-semibold">Detail Dokumen</h2>
+                    <h2 class="text-[#001220] text-xl font-semibold">Detail KTP</h2>
                     @php
                         $statusColors = [
                             'pending' => 'bg-[#FEF3C7] text-[#92400E]',
@@ -33,7 +33,8 @@
                         {{ $statusLabels[$document->status] ?? 'Pending' }}
                     </span>
                 </div>
-                <a href="{{ route('owner.document.index') }}" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <a href="{{ route('owner.verification.identity.index') }}"
+                    class="p-2 hover:bg-gray-100 rounded-full transition-colors">
                     <svg class="w-5 h-5 text-[#42474C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -45,45 +46,18 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Left Column -->
                     <div class="space-y-4">
-                        <!-- Jenis Dokumen -->
                         <div>
                             <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase">Jenis Dokumen</p>
-                            <p class="text-[#191C1D] text-base font-semibold mt-1">{{ $document->document_type_label }}</p>
+                            <p class="text-[#191C1D] text-base font-semibold mt-1">Kartu Tanda Penduduk (KTP)</p>
                         </div>
-
-                        @if ($document->custom_type)
-                            <div>
-                                <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase">Tipe Lainnya</p>
-                                <p class="text-[#191C1D] text-base mt-1">{{ $document->custom_type }}</p>
-                            </div>
-                        @endif
 
                         @if ($document->document_number)
                             <div>
-                                <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase">Nomor Dokumen</p>
+                                <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase">Nomor KTP</p>
                                 <p class="text-[#191C1D] text-base font-mono mt-1">{{ $document->document_number }}</p>
                             </div>
                         @endif
 
-                        @if ($document->boardingHouse)
-                            <div>
-                                <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase">Properti Terkait</p>
-                                <p class="text-[#191C1D] text-base mt-1">{{ $document->boardingHouse->name }}</p>
-                            </div>
-                        @endif
-
-                        @if ($document->expired_date)
-                            <div>
-                                <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase">Tanggal Kadaluarsa
-                                </p>
-                                <p class="text-[#191C1D] text-base mt-1">{{ $document->expired_date->format('d M Y') }}</p>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Right Column -->
-                    <div class="space-y-4">
-                        <!-- Status -->
                         <div>
                             <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase">Status</p>
                             <span
@@ -92,7 +66,6 @@
                             </span>
                         </div>
 
-                        <!-- Upload Date -->
                         <div>
                             <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase">Diupload</p>
                             <p class="text-[#191C1D] text-base mt-1">{{ $document->created_at->format('d M Y H:i') }}</p>
@@ -105,7 +78,10 @@
                                 </p>
                             </div>
                         @endif
+                    </div>
 
+                    <!-- Right Column -->
+                    <div class="space-y-4">
                         @if ($document->rejection_reason)
                             <div>
                                 <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase">Alasan Ditolak</p>
@@ -135,15 +111,16 @@
 
                             @if ($document->status == 'pending')
                                 <button
-                                    onclick="if(confirm('Yakin ingin menghapus dokumen ini?')) { document.getElementById('delete-form').submit(); }"
+                                    onclick="if(confirm('Yakin ingin menghapus dokumen KTP ini?')) { document.getElementById('delete-form').submit(); }"
                                     class="inline-flex items-center gap-2 px-6 py-2.5 border-2 border-[#BA1A1A] text-[#BA1A1A] rounded-lg font-semibold hover:bg-[#BA1A1A] hover:text-white transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
-                                    Hapus Dokumen
+                                    Hapus KTP
                                 </button>
-                                <form id="delete-form" action="{{ route('owner.document.destroy', $document->id) }}"
+                                <form id="delete-form"
+                                    action="{{ route('owner.verification.identity.destroy', $document->id) }}"
                                     method="POST" style="display: none;">
                                     @csrf
                                     @method('DELETE')
@@ -160,9 +137,9 @@
                 @endphp
                 @if (in_array(strtolower($extension), $imageExtensions))
                     <div class="mt-6 pt-6 border-t border-[#C3C7CD]">
-                        <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase mb-3">Preview Dokumen</p>
+                        <p class="text-[#42474C] text-xs font-semibold tracking-wide uppercase mb-3">Preview KTP</p>
                         <div class="bg-[#F2F4F5] rounded-lg p-4 flex items-center justify-center max-h-96 overflow-hidden">
-                            <img src="{{ Storage::url($document->file_path) }}" alt="{{ $document->document_type_label }}"
+                            <img src="{{ Storage::url($document->file_path) }}" alt="KTP"
                                 class="max-h-full max-w-full object-contain rounded-lg">
                         </div>
                     </div>
@@ -171,7 +148,7 @@
 
             <!-- Footer -->
             <div class="px-6 py-4 border-t border-[#C3C7CD] bg-[#ECEEEF] flex justify-end">
-                <a href="{{ route('owner.document.index') }}"
+                <a href="{{ route('owner.verification.identity.index') }}"
                     class="px-6 py-2 text-[#42474C] font-medium hover:text-[#001220] transition-colors">
                     Tutup
                 </a>
