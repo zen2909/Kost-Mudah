@@ -1,94 +1,29 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KostMudah - Tenant</title>
-    @vite(['resources/css/app.css','resources/js/app.js'])
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/android-chrome-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('images/android-chrome-512x512.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}">
+    <title>@yield('title', 'Dashboard Tenant - KostMudah')</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
 
-<body class="bg-gray-50">
-    <script src="https://unpkg.com/lucide@latest"></script>
+<body>
+    <div class="flex min-h-screen bg-gray-50">
+        <!-- Sidebar - Fixed -->
+        @include('components.tenant.sidebar')
 
-<script>
-    lucide.createIcons();
-</script>
-<div class="flex min-h-screen">
-<aside class="w-64 bg-cyan-950 text-white flex flex-col justify-between">
-<div>
-<div class="p-6 flex items-center gap-3">
-
-    <div
-        class="w-10 h-10 rounded-lg bg-sky-500 flex items-center justify-center">
-
-        <i data-lucide="building-2"
-            class="w-6 h-6 text-white">
-        </i>
-
-    </div>
-
-    <div>
-
-        <h1 class="text-xl font-bold text-white">
-            KostMudah
-        </h1>
-
-        <p class="text-slate-400 text-[10px] uppercase tracking-widest">
-            MANAGEMENT
-        </p>
-
-    </div>
-
-</div>
-<nav class="px-4 space-y-2">
-
-    <!-- Dashboard -->
-    <a href="{{ route('tenant.dashboard') }}"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg transition
-        {{ request()->routeIs('tenant.dashboard')
-            ? 'bg-white/10 text-white font-bold'
-            : 'text-slate-400 hover:bg-white/10 hover:text-white' }}">
-
-        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-
-        <span>Dashboard</span>
-
-    </a>
-
-    <!-- Cari Kost -->
-    <a href="{{ route('tenant.kost.index') }}"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg transition
-        {{ request()->routeIs('tenant.kost.*')
-            ? 'bg-white/10 text-white font-bold'
-            : 'text-slate-400 hover:bg-white/10 hover:text-white' }}">
-
-        <i data-lucide="search" class="w-5 h-5"></i>
-
-        <span>Cari Kost</span>
-
-    </a>
-
-    <!-- Favorit -->
-    <a href="{{ route('tenant.favorit.index') }}"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg transition
-        {{ request()->routeIs('tenant.favorit.*')
-            ? 'bg-white/10 text-white font-bold'
-            : 'text-slate-400 hover:bg-white/10 hover:text-white' }}">
-
-        <i data-lucide="heart" class="w-5 h-5"></i>
-
-        <span>Favorit Saya</span>
-
-    </a>
-
-    <!-- Riwayat -->
-    <a href="{{ route('tenant.riwayat.index') }}"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg transition
-        {{ request()->routeIs('tenant.riwayat.*')
-        ? 'bg-white/10 text-white font-bold'
-        : 'text-slate-400 hover:bg-white/10 hover:text-white' }}">
-
-            <i data-lucide="history" class="w-5 h-5"></i>
+        <!-- Main Content -->
+        <div id="mainContent" class="flex-1 transition-all duration-300 ease-in-out ml-[263px]">
+            @include('components.tenant.header')
 
             <span>Riwayat Sewa</span>
 
@@ -158,40 +93,177 @@
                        focus:border-cyan-900 focus:ring-2 focus:ring-cyan-900/20 outline-none">
 
         </div>
-
     </div>
 
-    {{-- Right --}}
-    <div class="flex items-center gap-6 ml-8">
+    <!-- Script Toggle Sidebar -->
+    <script>
+        let isSidebarOpen = true;
 
-        {{-- Notification --}}
-        <button class="relative">
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const logoContainer = document.getElementById('logoContainer');
 
-            <i
-                data-lucide="bell"
-                class="w-7 h-7 text-gray-700">
-            </i>
+            if (!sidebar || !mainContent) return;
 
-            <span
-                class="absolute top-0 right-0 w-2 h-2 rounded-full bg-red-500">
-            </span>
+            if (isSidebarOpen) {
+                // Collapse sidebar
+                sidebar.style.width = '72px';
+                mainContent.style.marginLeft = '72px';
 
-        </button>
+                if (logoContainer) {
+                    logoContainer.style.marginLeft = '0px';
+                    logoContainer.style.width = '40px';
+                    logoContainer.style.height = '40px';
+                    logoContainer.style.padding = '6px';
+                    logoContainer.style.borderRadius = '10px';
+                }
 
-        <div class="h-10 border-l border-gray-300"></div>
+                document.querySelectorAll('#sidebar .menu-text, #sidebar .logo-text').forEach(el => {
+                    if (el) {
+                        el.style.width = '0';
+                        el.style.margin = '0';
+                        el.style.padding = '0';
+                        el.style.opacity = '0';
+                        el.style.overflow = 'hidden';
+                        el.style.minWidth = '0';
+                    }
+                });
 
-        {{-- Avatar --}}
-        <img
-            src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0EA5E9&color=fff"
-            class="w-12 h-12 rounded-full border-2 border-cyan-900">
+                document.querySelectorAll('#sidebar .group-item > span:last-child').forEach(el => {
+                    if (el && !el.classList.contains('hidden')) {
+                        el.classList.add('hidden');
+                    }
+                });
 
-    </div>
+                if (toggleIcon) {
+                    toggleIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                `;
+                }
 
-</header>
-<main class="p-8">
-@yield('content')
-</main>
-</div>
-</div>
+                isSidebarOpen = false;
+            } else {
+                // Expand sidebar
+                sidebar.style.width = '263px';
+                mainContent.style.marginLeft = '263px';
+
+                if (logoContainer) {
+                    logoContainer.style.marginLeft = '0';
+                    logoContainer.style.width = '56px';
+                    logoContainer.style.height = '56px';
+                    logoContainer.style.padding = '8px';
+                    logoContainer.style.borderRadius = '12px';
+                }
+
+                document.querySelectorAll('#sidebar .menu-text, #sidebar .logo-text').forEach(el => {
+                    if (el) {
+                        el.style.width = '';
+                        el.style.margin = '';
+                        el.style.padding = '';
+                        el.style.opacity = '1';
+                        el.style.overflow = '';
+                        el.style.minWidth = '';
+                    }
+                });
+
+                if (toggleIcon) {
+                    toggleIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                `;
+                }
+
+                isSidebarOpen = true;
+            }
+        }
+
+        // Tooltip on hover
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#sidebar .group-item').forEach(item => {
+                if (!item) return;
+
+                item.addEventListener('mouseenter', function(e) {
+                    if (!isSidebarOpen) {
+                        const tooltip = this.querySelector('span:last-child');
+                        if (tooltip && tooltip.classList.contains('hidden')) {
+                            tooltip.classList.remove('hidden');
+                        }
+                    }
+                });
+
+                item.addEventListener('mouseleave', function(e) {
+                    const tooltip = this.querySelector('span:last-child');
+                    if (tooltip) {
+                        tooltip.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Responsive
+            function handleResize() {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.getElementById('mainContent');
+                const logoContainer = document.getElementById('logoContainer');
+
+                if (!sidebar || !mainContent) return;
+
+                if (window.innerWidth < 768 && isSidebarOpen) {
+                    sidebar.style.width = '72px';
+                    mainContent.style.marginLeft = '72px';
+
+                    if (logoContainer) {
+                        logoContainer.style.marginLeft = '0px';
+                        logoContainer.style.width = '50px';
+                        logoContainer.style.height = '50px';
+                        logoContainer.style.padding = '6px';
+                        logoContainer.style.borderRadius = '10px';
+                    }
+
+                    document.querySelectorAll('#sidebar .menu-text, #sidebar .logo-text').forEach(el => {
+                        if (el) {
+                            el.style.width = '0';
+                            el.style.margin = '0';
+                            el.style.padding = '0';
+                            el.style.opacity = '0';
+                            el.style.overflow = 'hidden';
+                            el.style.minWidth = '0';
+                        }
+                    });
+
+                    isSidebarOpen = false;
+                } else if (window.innerWidth >= 768 && !isSidebarOpen) {
+                    sidebar.style.width = '263px';
+                    mainContent.style.marginLeft = '263px';
+
+                    if (logoContainer) {
+                        logoContainer.style.marginLeft = '0';
+                        logoContainer.style.width = '56px';
+                        logoContainer.style.height = '56px';
+                        logoContainer.style.padding = '8px';
+                        logoContainer.style.borderRadius = '12px';
+                    }
+
+                    document.querySelectorAll('#sidebar .menu-text, #sidebar .logo-text').forEach(el => {
+                        if (el) {
+                            el.style.width = '';
+                            el.style.margin = '';
+                            el.style.padding = '';
+                            el.style.opacity = '1';
+                            el.style.overflow = '';
+                            el.style.minWidth = '';
+                        }
+                    });
+
+                    isSidebarOpen = true;
+                }
+            }
+
+            handleResize();
+            window.addEventListener('resize', handleResize);
+        });
+    </script>
+    @stack('scripts')
 </body>
+
 </html>
