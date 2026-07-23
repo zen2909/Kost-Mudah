@@ -24,7 +24,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Route untuk guest (belum login)
-Route::get('/', [GuestController::class, 'index'])->name('guest.home');
+Route::get('/', [GuestController::class, 'home'])->name('guest.home');
+Route::get('/cari-kost', [GuestController::class, 'search'])->name('guest.search');
+Route::get('/kost/{slug}', [GuestController::class, 'show'])->name('guest.detail');
 
 // Route yang membutuhkan auth dan role spesifik
 Route::middleware('auth')->group(function () {
