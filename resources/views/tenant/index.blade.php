@@ -8,9 +8,15 @@
 <h1 class="text-5xl font-bold mb-4">Halo, {{ Auth::user()->name }}! 👋</h1>
 <p class="text-slate-300 text-xl">Tagihan kost kamu untuk periode ini sudah siap dibayarkan. Jangan sampai telat ya!</p>
 <div class="mt-8 flex gap-4">
-<button class="bg-sky-500 px-6 py-3 rounded-xl font-semibold">Bayar Sekarang</button>
-<button class="bg-white/10 px-6 py-3 rounded-xl font-semibold">Lihat Detail Kost</button>
-</div>
+
+            <a href="{{ route('tenant.bills.index') }}"
+                class="inline-flex items-center justify-center bg-sky-500 hover:bg-sky-600 px-6 py-3 rounded-xl font-semibold transition">
+
+                Bayar Sekarang
+
+            </a>
+
+        </div>
 </div>
 
 <div class="bg-white rounded-3xl border p-6">

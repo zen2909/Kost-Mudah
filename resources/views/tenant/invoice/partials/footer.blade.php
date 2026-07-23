@@ -12,14 +12,10 @@
 
     </button>
 
-    <a
-
-        href="{{ route('tenant.riwayat.index') }}"
-
+    <a href="{{ route('tenant.bills.index') }}"
         class="flex-1 bg-cyan-950 hover:bg-cyan-900 text-white rounded-xl py-4 text-center font-bold">
 
         Tutup
 
     </a>
-
 </div>

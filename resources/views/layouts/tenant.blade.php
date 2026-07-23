@@ -25,9 +25,72 @@
         <div id="mainContent" class="flex-1 transition-all duration-300 ease-in-out ml-[263px]">
             @include('components.tenant.header')
 
-            <main class="p-6">
-                @yield('content')
-            </main>
+            <span>Riwayat Sewa</span>
+
+    </a>
+
+    <!-- Profil -->
+    <a href="{{ route('tenant.profile.index') }}"
+        class="flex items-center gap-3 px-4 py-3 rounded-lg transition
+        {{ request()->routeIs('tenant.profile.*')
+        ? 'bg-white/10 text-white font-bold'
+        : 'text-slate-400 hover:bg-white/10 hover:text-white' }}">
+
+            <i data-lucide="user-round" class="w-5 h-5"></i>
+
+            <span>Profil Saya</span>
+
+    </a>
+    <!-- Tagihan -->
+    <!-- Tagihan Saya -->
+    <a href="{{ route('tenant.bills.index') }}"
+        class="flex items-center gap-3 px-4 py-3 rounded-lg transition
+        {{ request()->routeIs('tenant.bills.*')
+            ? 'bg-white/10 text-white font-bold'
+            : 'text-slate-400 hover:bg-white/10 hover:text-white' }}">
+
+        <i data-lucide="receipt-text" class="w-5 h-5"></i>
+
+        <span>Tagihan Saya</span>
+
+    </a>
+
+</nav>
+</div>
+<div class="p-6 border-t border-slate-700">
+<form method="POST" action="{{ route('logout') }}">
+    @csrf
+
+    <button
+        type="submit"
+        class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-red-600 hover:text-white transition">
+
+        <i data-lucide="log-out" class="w-5 h-5"></i>
+
+        <span>Logout</span>
+
+    </button>
+</form>
+</div>
+</aside>
+<div class="flex-1">
+<header class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center">
+
+    {{-- Search --}}
+    <div class="w-full max-w-xl">
+
+        <div class="relative">
+
+            <i
+                data-lucide="search"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500">
+            </i>
+
+            <input
+                type="text"
+                placeholder="@yield('search-placeholder','Cari...')"
+                class="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full border border-transparent
+                       focus:border-cyan-900 focus:ring-2 focus:ring-cyan-900/20 outline-none">
 
         </div>
     </div>

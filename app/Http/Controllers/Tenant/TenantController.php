@@ -42,4 +42,8 @@ class TenantController extends Controller
     {
         return view('tenant.invoice.index');
     }
+    public function bills()
+    {
+        return view('tenant.bills.index');
+    }
     }
