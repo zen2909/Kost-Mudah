@@ -185,6 +185,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/invoice', [TenantController::class,'invoice'])
                 ->name('invoice.index');
 
+            Route::get('/tenant/tagihan', [TenantController::class, 'bills'])
+    ->name('bills.index');
+
         });
     
 
