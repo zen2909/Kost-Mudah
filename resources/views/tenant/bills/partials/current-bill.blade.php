@@ -3,10 +3,12 @@
     <div class="border-b px-6 py-4">
 
         <h2 class="text-xl font-semibold">
-            Tagihan Bulan Ini
+            Tagihan Saat Ini
         </h2>
 
     </div>
+
+    @if($currentBill)
 
     <div class="p-6">
 
@@ -16,13 +18,13 @@
 
                 <h3 class="text-2xl font-bold text-cyan-950">
 
-                    Kost Melati Residence
+                    {{ $currentBill->boardingHouse->name }}
 
                 </h3>
 
                 <p class="text-gray-500 mt-1">
 
-                    Kamar 203
+                    {{ $currentBill->boardingHouse->address }}
 
                 </p>
 
@@ -32,15 +34,9 @@
 
                 <h2 class="text-3xl font-bold text-cyan-950">
 
-                    Rp2.500.000
+                    Rp{{ number_format($currentBill->total_price,0,',','.') }}
 
                 </h2>
-
-                <p class="text-gray-500">
-
-                    Juli 2026
-
-                </p>
 
             </div>
 
@@ -51,14 +47,12 @@
             <div>
 
                 <p class="text-sm text-gray-500">
-
-                    Periode
-
+                    Mulai Sewa
                 </p>
 
                 <h4 class="font-semibold mt-1">
 
-                    Juli 2026
+                    {{ $currentBill->start_date->format('d M Y') }}
 
                 </h4>
 
@@ -67,14 +61,12 @@
             <div>
 
                 <p class="text-sm text-gray-500">
-
-                    Jatuh Tempo
-
+                    Berakhir
                 </p>
 
                 <h4 class="font-semibold mt-1 text-red-600">
 
-                    05 Juli 2026
+                    {{ $currentBill->end_date->format('d M Y') }}
 
                 </h4>
 
@@ -83,14 +75,12 @@
             <div>
 
                 <p class="text-sm text-gray-500">
-
                     Status
-
                 </p>
 
                 <span class="inline-flex mt-2 rounded-full bg-red-100 px-3 py-1 text-red-700 text-sm font-semibold">
 
-                    Belum Dibayar
+                    {{ ucfirst($currentBill->status) }}
 
                 </span>
 
@@ -100,7 +90,8 @@
 
         <div class="mt-8">
 
-            <a href="{{ route('tenant.payment.index') }}"
+            <a
+                href="{{ route('tenant.payment.index',$currentBill) }}"
                 class="inline-flex items-center rounded-lg bg-cyan-950 px-8 py-3 text-white font-semibold hover:bg-cyan-900">
 
                 Bayar Sekarang
@@ -110,5 +101,15 @@
         </div>
 
     </div>
+
+    @else
+
+    <div class="p-10 text-center text-gray-500">
+
+        Tidak ada tagihan yang perlu dibayar.
+
+    </div>
+
+    @endif
 
 </div>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Models\Payment;
 
 class Rental extends Model
 {
@@ -137,4 +138,6 @@ class Rental extends Model
         
         return $code;
     }
+
+
 }

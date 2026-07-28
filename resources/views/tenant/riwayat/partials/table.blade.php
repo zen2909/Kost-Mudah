@@ -13,43 +13,11 @@
             <option>Semua Status</option>
             <option>Active</option>
             <option>Completed</option>
-            <option>Menunggu Pembayaran</option>
+            <option>Pending</option>
 
         </select>
 
     </div>
-
-    @php
-
-        $riwayat = [
-
-            [
-                'nama'=>'Kost Mentari Pagi',
-                'kamar'=>'Kamar 204 • Lantai 2',
-                'periode'=>'Jan 2024 - Present',
-                'harga'=>'Rp 2.100.000',
-                'status'=>'Active'
-            ],
-
-            [
-                'nama'=>'Kost Abadi Jaya',
-                'kamar'=>'Kamar 101 • Lantai 1',
-                'periode'=>'Jun 2023 - Des 2023',
-                'harga'=>'Rp 1.850.000',
-                'status'=>'Completed'
-            ],
-
-            [
-                'nama'=>'Kost Hijau Asri',
-                'kamar'=>'Kamar 05 • Paviliun',
-                'periode'=>'Jan 2023 - Mei 2023',
-                'harga'=>'Rp 2.500.000',
-                'status'=>'Completed'
-            ],
-
-        ];
-
-    @endphp
 
     <div class="overflow-x-auto">
 
@@ -57,51 +25,58 @@
 
             <thead class="bg-gray-50">
 
-            <tr class="text-left text-xs uppercase text-gray-500">
+                <tr class="text-left text-xs uppercase text-gray-500">
 
-                <th class="p-5">Kost</th>
+                    <th class="p-5">Kost</th>
+                    <th class="p-5">Periode</th>
+                    <th class="p-5">Biaya/Bulan</th>
+                    <th class="p-5">Status</th>
+                    <th class="p-5 text-right">Aksi</th>
 
-                <th class="p-5">Periode</th>
-
-                <th class="p-5">Biaya/Bulan</th>
-
-                <th class="p-5">Status</th>
-
-                <th class="p-5 text-right">Aksi</th>
-
-            </tr>
+                </tr>
 
             </thead>
 
             <tbody>
 
-            @foreach($riwayat as $item)
+            @forelse($rentals as $rental)
 
-                <tr class="border-t hover:bg-slate-50 hover:shadow-sm transition-all duration-200">
+                <tr class="border-t hover:bg-slate-50 transition">
 
+                    {{-- Kost --}}
                     <td class="p-5">
 
                         <div class="flex items-center gap-3">
 
-                            <div
-                                class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center">
+                            @if($rental->boardingHouse->primaryPhoto)
 
-                                <i data-lucide="building-2"
-                                    class="w-5 h-5 text-slate-700"></i>
+                                <img
+                                    src="{{ asset('storage/'.$rental->boardingHouse->primaryPhoto->photo_path) }}"
+                                    class="w-12 h-12 rounded-lg object-cover">
 
-                            </div>
+                            @else
+
+                                <div
+                                    class="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center">
+
+                                    <i data-lucide="building-2"
+                                       class="w-5 h-5 text-slate-700"></i>
+
+                                </div>
+
+                            @endif
 
                             <div>
 
                                 <h4 class="font-semibold">
 
-                                    {{ $item['nama'] }}
+                                    {{ $rental->boardingHouse->name }}
 
                                 </h4>
 
                                 <p class="text-sm text-gray-500">
 
-                                    {{ $item['kamar'] }}
+                                    {{ $rental->boardingHouse->type }}
 
                                 </p>
 
@@ -111,64 +86,73 @@
 
                     </td>
 
+                    {{-- Periode --}}
                     <td class="p-5">
 
-                        {{ $item['periode'] }}
+                        {{ \Carbon\Carbon::parse($rental->start_date)->translatedFormat('d M Y') }}
+                        <br>
+                        <span class="text-gray-500">
+
+                            s/d
+
+                        </span>
+                        <br>
+
+                        {{ \Carbon\Carbon::parse($rental->end_date)->translatedFormat('d M Y') }}
 
                     </td>
 
+                    {{-- Harga --}}
                     <td class="p-5 font-semibold">
 
-                        {{ $item['harga'] }}
+                        Rp {{ number_format($rental->boardingHouse->price,0,',','.') }}
 
                     </td>
 
+                    {{-- Status --}}
                     <td class="p-5">
 
-                        @switch($item['status'])
+                        @php
+                            $status = strtolower($rental->status);
+                        @endphp
 
-                        @case('Active')
+                        @if($status=='active')
 
-                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
-                        Active
-                        </span>
+                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
+                                Active
+                            </span>
 
-                        @break
+                        @elseif($status=='pending')
 
-                        @case('Pending')
+                            <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold">
+                                Pending
+                            </span>
 
-                        <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold">
-                        Pending
-                        </span>
+                        @elseif($status=='cancelled')
 
-                        @break
+                            <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
+                                Cancelled
+                            </span>
 
-                        @case('Cancelled')
+                        @else
 
-                        <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
-                        Cancelled
-                        </span>
+                            <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold">
+                                Completed
+                            </span>
 
-                        @break
-
-                        @default
-
-                        <span class="px-3 py-1 rounded-full bg-gray-200 text-gray-700 text-xs font-bold">
-                        Completed
-                        </span>
-
-                        @endswitch
+                        @endif
 
                     </td>
 
+                    {{-- Aksi --}}
                     <td class="p-5 text-right">
 
                         <a
-                            href="#"
-                            class="inline-flex items-center gap-2 text-cyan-900 font-semibold hover:text-cyan-700 transition">
+                            href="{{ route('tenant.invoice.index',$rental) }}"
+                            class="inline-flex items-center gap-2 text-cyan-900 font-semibold hover:text-cyan-700">
 
                             <i data-lucide="receipt-text"
-                            class="w-4 h-4"></i>
+                               class="w-4 h-4"></i>
 
                             View Invoice
 
@@ -178,7 +162,20 @@
 
                 </tr>
 
-            @endforeach
+            @empty
+
+                <tr>
+
+                    <td colspan="5"
+                        class="text-center py-12 text-gray-500">
+
+                        Belum ada riwayat penyewaan.
+
+                    </td>
+
+                </tr>
+
+            @endforelse
 
             </tbody>
 
@@ -187,36 +184,26 @@
     </div>
 
     {{-- Footer --}}
-
-    <div
-        class="flex justify-between items-center p-5 bg-gray-50 border-t">
+    <div class="flex justify-between items-center p-5 bg-gray-50 border-t">
 
         <span class="text-gray-500">
 
-            Showing 3 of 3 rentals
+            Showing {{ $rentals->count() }} rentals
 
         </span>
 
         <div class="flex items-center gap-4">
 
-            <button
-                class="text-gray-400">
-
+            <button class="text-gray-400">
                 Previous
-
             </button>
 
             <span class="font-bold">
-
                 1
-
             </span>
 
-            <button
-                class="text-gray-400">
-
+            <button class="text-gray-400">
                 Next
-
             </button>
 
         </div>

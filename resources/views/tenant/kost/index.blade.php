@@ -12,7 +12,7 @@
     </h1>
 
     <p class="text-gray-600 mt-2">
-        Ribuan pilihan hunian nyaman menantimu di berbagai lokasi strategis.
+        Ribuan pilihan kost terbaik tersedia untukmu.
     </p>
 
 </div>
@@ -21,7 +21,7 @@
 @include('tenant.kost.filter')
 
 {{-- Header --}}
-<div class="flex justify-between items-center mt-10 mb-6">
+<div class="flex flex-col md:flex-row md:justify-between md:items-center mt-10 mb-6 gap-4">
 
     <div>
 
@@ -31,7 +31,7 @@
 
             <span class="text-gray-500 text-lg font-normal">
 
-                (124 Kost ditemukan)
+                ({{ $kosts->total() }} Kost ditemukan)
 
             </span>
 
@@ -39,68 +39,115 @@
 
     </div>
 
-    <div class="flex items-center gap-2">
+    {{-- Sorting --}}
+    <form method="GET">
 
-        <span class="text-gray-500">
+        {{-- mempertahankan filter --}}
+        <input type="hidden" name="search" value="{{ request('search') }}">
+        <input type="hidden" name="kelurahan" value="{{ request('kelurahan') }}">
+        <input type="hidden" name="type" value="{{ request('type') }}">
+        <input type="hidden" name="price" value="{{ request('price') }}">
 
-            Urutkan:
+        <div class="flex items-center gap-3">
 
-        </span>
+            <span class="text-gray-500">
 
-        <select class="border rounded-lg px-3 py-2">
+                Urutkan
 
-            <option>Terpopuler</option>
+            </span>
 
-            <option>Harga Terendah</option>
+            <select
+                name="sort"
+                onchange="this.form.submit()"
+                class="border rounded-lg px-4 py-2">
 
-            <option>Harga Tertinggi</option>
+                <option value=""
+                    {{ request('sort')=='' ? 'selected' : '' }}>
+                    Terbaru
+                </option>
 
-        </select>
+                <option
+                    value="price_low"
+                    {{ request('sort')=='price_low' ? 'selected' : '' }}>
+                    Harga Terendah
+                </option>
 
-    </div>
+                <option
+                    value="price_high"
+                    {{ request('sort')=='price_high' ? 'selected' : '' }}>
+                    Harga Tertinggi
+                </option>
+
+                <option
+                    value="name"
+                    {{ request('sort')=='name' ? 'selected' : '' }}>
+                    Nama A-Z
+                </option>
+
+            </select>
+
+        </div>
+
+    </form>
 
 </div>
 
-{{-- Grid Card --}}
+{{-- Grid Kost --}}
 <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-6">
 
-    @php
+    @forelse($kosts as $kost)
 
-        $kosts = collect(range(1,6))->map(function(){
+        @include('tenant.kost.card', [
+            'kost' => $kost
+        ])
 
-            return (object)[
+    @empty
 
-                'nama'=>'Kost Menteng Residence',
+        <div class="col-span-3">
 
-                'lokasi'=>'Menteng, Jakarta Pusat',
+            <div class="bg-white rounded-xl border p-10 text-center">
 
-                'rating'=>'4.8',
+                <div class="text-6xl mb-4">
+                    🏠
+                </div>
 
-                'harga'=>'Rp 3.500.000',
+                <h2 class="text-2xl font-bold text-gray-700">
 
-                'badge'=>'verified',
+                    Kost tidak ditemukan
 
-                'gambar'=>'https://placehold.co/600x400'
+                </h2>
 
-            ];
+                <p class="text-gray-500 mt-2">
 
-        });
+                    Coba ubah kata kunci pencarian atau filter.
 
-    @endphp
+                </p>
 
-    @foreach($kosts as $kost)
+                <a
+                    href="{{ route('tenant.kost.index') }}"
+                    class="inline-block mt-6 bg-cyan-900 hover:bg-cyan-800 text-white px-6 py-3 rounded-lg">
 
-        @include('tenant.kost.card',['kost'=>$kost])
+                    Reset Pencarian
 
-    @endforeach
+                </a>
+
+            </div>
+
+        </div>
+
+    @endforelse
 
 </div>
 
 {{-- Pagination --}}
+@if($kosts->hasPages())
+
 <div class="mt-10">
 
-    @include('tenant.kost.pagination')
+    {{ $kosts->links() }}
 
 </div>
+
+@endif
 
 @endsection

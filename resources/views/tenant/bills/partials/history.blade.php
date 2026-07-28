@@ -1,92 +1,95 @@
 <div class="bg-white rounded-xl border shadow-sm overflow-hidden">
 
     <div class="border-b px-6 py-4">
-
         <h2 class="text-xl font-semibold">
-
             Riwayat Tagihan
-
         </h2>
-
     </div>
 
     <table class="w-full">
 
         <thead class="bg-gray-50">
-
             <tr>
-
                 <th class="text-left px-6 py-3">Periode</th>
-
                 <th class="text-left px-6 py-3">Total</th>
-
                 <th class="text-left px-6 py-3">Status</th>
-
                 <th class="text-right px-6 py-3">Aksi</th>
-
             </tr>
-
         </thead>
 
         <tbody>
 
-            <tr class="border-t">
+            @forelse($rentals as $rental)
 
-                <td class="px-6 py-4">Juni 2026</td>
+                <tr class="border-t">
 
-                <td class="px-6 py-4">Rp2.500.000</td>
+                    <td class="px-6 py-4">
+                        {{ $rental->start_date->format('F Y') }}
+                    </td>
 
-                <td class="px-6 py-4">
+                    <td class="px-6 py-4">
+                        Rp{{ number_format($rental->total_price, 0, ',', '.') }}
+                    </td>
 
-                    <span class="rounded-full bg-green-100 px-3 py-1 text-green-700 text-sm font-semibold">
+                    <td class="px-6 py-4">
 
-                        Lunas
+                        @if($rental->status == 'paid')
 
-                    </span>
+                            <span class="rounded-full bg-green-100 px-3 py-1 text-green-700 text-sm font-semibold">
+                                Lunas
+                            </span>
 
-                </td>
+                        @elseif($rental->status == 'pending')
 
-                <td class="px-6 py-4 text-right">
+                            <span class="rounded-full bg-red-100 px-3 py-1 text-red-700 text-sm font-semibold">
+                                Pending
+                            </span>
 
-                    <a href="{{ route('tenant.invoice.index') }}"
-                        class="text-cyan-700 font-semibold">
+                        @else
 
-                        Detail
+                            <span class="rounded-full bg-gray-100 px-3 py-1 text-gray-700 text-sm font-semibold">
+                                {{ ucfirst($rental->status) }}
+                            </span>
 
-                    </a>
+                        @endif
 
-                </td>
+                    </td>
 
-            </tr>
+                    <td class="px-6 py-4 text-right">
 
-            <tr class="border-t">
+                        @if($rental->status == 'paid')
 
-                <td class="px-6 py-4">Mei 2026</td>
+                            <a href="{{ route('tenant.invoice.index', $rental) }}"
+                                class="text-cyan-700 font-semibold hover:underline">
 
-                <td class="px-6 py-4">Rp2.500.000</td>
+                                Detail
 
-                <td class="px-6 py-4">
+                            </a>
 
-                    <span class="rounded-full bg-green-100 px-3 py-1 text-green-700 text-sm font-semibold">
+                        @else
 
-                        Lunas
+                            <a href="{{ route('tenant.payment.index', $rental) }}"
+                                class="text-cyan-700 font-semibold hover:underline">
 
-                    </span>
+                                Bayar
 
-                </td>
+                            </a>
 
-                <td class="px-6 py-4 text-right">
+                        @endif
 
-                    <a href="{{ route('tenant.invoice.index') }}"
-                        class="text-cyan-700 font-semibold">
+                    </td>
 
-                        Detail
+                </tr>
 
-                    </a>
+            @empty
 
-                </td>
+                <tr>
+                    <td colspan="4" class="text-center py-8 text-gray-500">
+                        Belum ada riwayat tagihan.
+                    </td>
+                </tr>
 
-            </tr>
+            @endforelse
 
         </tbody>
 

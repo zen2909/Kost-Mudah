@@ -6,65 +6,44 @@
 
     </h2>
 
-    @php
+    @if(!empty($kost->facilities))
 
-        $fasilitas = [
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
 
-            ['icon'=>'wifi','nama'=>'WiFi','detail'=>'100 Mbps'],
-
-            ['icon'=>'snowflake','nama'=>'AC','detail'=>'1 PK'],
-
-            ['icon'=>'bath','nama'=>'KM Dalam','detail'=>'Private'],
-
-            ['icon'=>'shirt','nama'=>'Laundry','detail'=>'Tersedia'],
-
-            ['icon'=>'car','nama'=>'Parkir','detail'=>'Mobil'],
-
-            ['icon'=>'shield-check','nama'=>'CCTV','detail'=>'24 Jam'],
-
-            ['icon'=>'desk','nama'=>'Meja & Kursi','detail'=>'Lengkap'],
-
-            ['icon'=>'zap','nama'=>'Listrik','detail'=>'Sudah Termasuk']
-
-        ];
-
-    @endphp
-
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
-
-        @foreach($fasilitas as $item)
-
-            <div
-                class="bg-gray-100 rounded-xl p-5 text-center hover:bg-cyan-950 hover:text-white transition-all duration-300 group">
+            @foreach($kost->facilities as $facility)
 
                 <div
-                    class="flex justify-center mb-4">
+                    class="bg-gray-100 rounded-xl p-5 text-center hover:bg-cyan-950 hover:text-white transition-all duration-300 group">
 
-                    <i
-                        data-lucide="{{ $item['icon'] }}"
-                        class="w-8 h-8 text-slate-700 group-hover:text-white">
-                    </i>
+                    <div class="flex justify-center mb-4">
+
+                        <i
+                            data-lucide="check-circle"
+                            class="w-8 h-8 text-slate-700 group-hover:text-white">
+                        </i>
+
+                    </div>
+
+                    <h3 class="font-semibold">
+
+                        {{ $facility }}
+
+                    </h3>
 
                 </div>
 
-                <h3
-                    class="font-semibold">
+            @endforeach
 
-                    {{ $item['nama'] }}
+        </div>
 
-                </h3>
+    @else
 
-                <p
-                    class="text-sm text-gray-500 group-hover:text-gray-200 mt-1">
+        <div class="bg-gray-100 rounded-xl p-6 text-center text-gray-500">
 
-                    {{ $item['detail'] }}
+            Fasilitas belum tersedia.
 
-                </p>
+        </div>
 
-            </div>
-
-        @endforeach
-
-    </div>
+    @endif
 
 </div>

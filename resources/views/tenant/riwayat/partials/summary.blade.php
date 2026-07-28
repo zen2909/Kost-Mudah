@@ -1,3 +1,11 @@
+@php
+    $activeRentals = $rentals->where('status', 'active')->count();
+
+    $totalPayment = $rentals->sum('total_price');
+
+    $lastRental = $rentals->first();
+@endphp
+
 <div class="grid lg:grid-cols-3 gap-6 mb-8">
 
     <div class="bg-white rounded-xl border p-6 hover:shadow-lg transition">
@@ -13,15 +21,11 @@
             <div>
 
                 <p class="text-xs uppercase font-semibold text-gray-500">
-
                     Total Sewa Aktif
-
                 </p>
 
                 <h3 class="text-3xl font-bold">
-
-                    1 Unit
-
+                    {{ $activeRentals }} Unit
                 </h3>
 
             </div>
@@ -43,15 +47,11 @@
             <div>
 
                 <p class="text-xs uppercase font-semibold text-gray-500">
-
                     Total Pembayaran
-
                 </p>
 
                 <h3 class="text-3xl font-bold">
-
-                    Rp 12.450.000
-
+                    Rp {{ number_format($totalPayment,0,',','.') }}
                 </h3>
 
             </div>
@@ -62,35 +62,37 @@
 
     <div class="bg-white rounded-xl border overflow-hidden hover:shadow-lg transition">
 
+        @if($lastRental)
+
         <div class="flex">
 
             <div class="flex-1 p-6">
 
                 <p class="text-xs uppercase font-semibold text-gray-500">
-
                     Hunian Terakhir
-
                 </p>
 
                 <h3 class="text-xl font-bold mt-2">
-
-                    Kost Abadi Jaya
-
+                    {{ $lastRental->boardingHouse->name }}
                 </h3>
 
                 <p class="text-sm text-gray-500">
-
-                    Diselesaikan 15 Des 2023
-
+                    {{ \Carbon\Carbon::parse($lastRental->end_date)->translatedFormat('d M Y') }}
                 </p>
 
             </div>
 
-            <img
-                src="https://placehold.co/120x120"
-                class="w-28 object-cover">
+            @if($lastRental->boardingHouse->primaryPhoto)
+
+                <img
+                    src="{{ asset('storage/'.$lastRental->boardingHouse->primaryPhoto->photo_path) }}"
+                    class="w-28 object-cover">
+
+            @endif
 
         </div>
+
+        @endif
 
     </div>
 

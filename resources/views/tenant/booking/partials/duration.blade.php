@@ -1,7 +1,6 @@
 <div class="bg-white border-x border-gray-200 px-6 pb-6">
 
-    <h3
-        class="font-bold text-2xl mb-5">
+    <h3 class="font-bold text-2xl mb-5">
 
         Pilih Durasi Sewa
 
@@ -9,73 +8,50 @@
 
     <div class="grid grid-cols-2 gap-5">
 
-        <button
-            class="border-2 border-cyan-950 rounded-xl py-8 hover:bg-cyan-50 transition">
+        @foreach([1,3,6,12] as $bulan)
 
-            <div class="text-3xl font-bold">
+            <button
+                type="button"
+                class="duration-btn {{ $bulan == 1 ? 'border-2 border-cyan-950 bg-cyan-50' : 'border' }} rounded-xl py-8 hover:border-cyan-950 hover:bg-cyan-50 transition"
+                data-month="{{ $bulan }}">
 
-                1 Bulan
+                <div class="text-3xl font-bold">
 
-            </div>
+                    {{ $bulan }} Bulan
 
-            <div class="text-gray-500 mt-2">
+                </div>
 
-                Reguler
+                <div class="mt-2
+                    @if($bulan == 1)
+                        text-gray-500
+                    @else
+                        text-green-600
+                    @endif">
 
-            </div>
+                    @switch($bulan)
 
-        </button>
+                        @case(3)
+                            Hemat 2%
+                            @break
 
-        <button
-            class="border rounded-xl py-8 hover:border-cyan-950 hover:bg-cyan-50 transition">
+                        @case(6)
+                            Hemat 5%
+                            @break
 
-            <div class="text-3xl font-bold">
+                        @case(12)
+                            Hemat 10%
+                            @break
 
-                3 Bulan
+                        @default
+                            Reguler
 
-            </div>
+                    @endswitch
 
-            <div class="text-green-600 mt-2">
+                </div>
 
-                Hemat 2%
+            </button>
 
-            </div>
-
-        </button>
-
-        <button
-            class="border rounded-xl py-8 hover:border-cyan-950 hover:bg-cyan-50 transition">
-
-            <div class="text-3xl font-bold">
-
-                6 Bulan
-
-            </div>
-
-            <div class="text-green-600 mt-2">
-
-                Hemat 5%
-
-            </div>
-
-        </button>
-
-        <button
-            class="border rounded-xl py-8 hover:border-cyan-950 hover:bg-cyan-50 transition">
-
-            <div class="text-3xl font-bold">
-
-                12 Bulan
-
-            </div>
-
-            <div class="text-green-600 mt-2">
-
-                Hemat 10%
-
-            </div>
-
-        </button>
+        @endforeach
 
     </div>
 

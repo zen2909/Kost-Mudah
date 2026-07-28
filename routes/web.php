@@ -20,6 +20,7 @@ use App\Http\Controllers\Owner\ProfileController as OwnerProfileController;
 use App\Http\Controllers\Owner\ReportController as OwnerReportController;
 use App\Http\Controllers\Owner\TenantController as OwnerTenantController;
 use App\Http\Controllers\Tenant\TenantController;
+use App\Http\Controllers\Tenant\FavoriteController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -155,44 +156,54 @@ Route::middleware('auth')->group(function () {
     // Route Tenant - hanya untuk role tenant
     // Route Tenant - hanya untuk role tenant
 
-    Route::middleware(['role:tenant'])
-        ->prefix('tenant')
-        ->name('tenant.')
-        ->group(function () {
+Route::middleware(['role:tenant'])
+    ->prefix('tenant')
+    ->name('tenant.')
+    ->group(function () {
 
-            Route::get('/dashboard', [TenantController::class, 'index'])
-                ->name('dashboard');
+        Route::get('/dashboard', [TenantController::class, 'dashboard'])
+            ->name('dashboard');
 
-            Route::get('/kost', [TenantController::class, 'kost'])
-                ->name('kost.index');
-            
-            Route::get('/favorit', [TenantController::class, 'favorit'])
-                ->name('favorit.index');
+        Route::get('/kost', [TenantController::class, 'kost'])
+            ->name('kost.index');
 
-            Route::get('/riwayat', [TenantController::class,'riwayat'])
-                ->name('riwayat.index');
+        Route::get('/kost/{slug}', [TenantController::class, 'detailKost'])
+            ->name('kost.show');
 
-            Route::get('/profile', [TenantController::class,'profile'])
-                ->name('profile.index');
-            
-            Route::get('/kost/detail', [TenantController::class, 'detailKost'])
-                ->name('kost.show');
+        Route::get('/favorit', [FavoriteController::class, 'index'])
+            ->name('favorit.index');
 
-            Route::get('/booking', [TenantController::class, 'booking'])
-                ->name('booking.index');
-            
-            Route::get('/payment', [TenantController::class, 'payment'])
-                ->name('payment.index');
+        Route::get('/riwayat', [TenantController::class, 'riwayat'])
+            ->name('riwayat.index');
 
-            Route::get('/invoice', [TenantController::class,'invoice'])
-                ->name('invoice.index');
+        Route::get('/profile', [TenantController::class, 'profile'])
+            ->name('profile.index');
 
-            Route::get('/tenant/tagihan', [TenantController::class, 'bills'])
-    ->name('bills.index');
+        Route::put('/profile', [TenantController::class, 'updateProfile'])
+            ->name('profile.update');
 
-        });
-    
+        Route::post('/favorite/{boardingHouse}', [FavoriteController::class, 'toggle'])
+            ->name('favorite.toggle');
 
+        Route::get('/booking/{slug}', [TenantController::class, 'booking'])
+            ->name('booking.index');
+
+        Route::post('/booking', [TenantController::class, 'storeBooking'])
+            ->name('booking.store');
+
+        Route::get('/payment/{rental}', [TenantController::class, 'payment'])
+            ->name('payment.index');
+
+        Route::post('/payment/{rental}', [TenantController::class, 'storePayment'])
+            ->name('payment.store');
+
+        Route::get('/invoice/{rental}', [TenantController::class, 'invoice'])
+            ->name('invoice.index');
+
+        Route::get('/tagihan', [TenantController::class, 'bills'])
+            ->name('bills.index');
+
+    });
     // Profile routes - semua user yang login bisa akses
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

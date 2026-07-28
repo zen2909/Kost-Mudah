@@ -17,61 +17,48 @@
 
     </div>
 
-    @php
+    @if(!empty($kost->rules))
 
-        $rules = [
+        @php
+            $rules = preg_split('/\r\n|\r|\n/', $kost->rules);
+        @endphp
 
-            [
-                'icon'=>'cigarette-off',
-                'text'=>'Dilarang merokok di dalam kamar',
-                'color'=>'text-red-600'
-            ],
+        <div class="grid md:grid-cols-2 gap-5">
 
-            [
-                'icon'=>'paw-print',
-                'text'=>'Tidak diperbolehkan membawa hewan peliharaan',
-                'color'=>'text-red-600'
-            ],
+            @foreach($rules as $rule)
 
-            [
-                'icon'=>'clock-3',
-                'text'=>'Akses tamu hingga pukul 22.00',
-                'color'=>'text-slate-700'
-            ],
+                @if(trim($rule) != '')
 
-            [
-                'icon'=>'key-round',
-                'text'=>'Akses penghuni 24 jam (Free Keycard)',
-                'color'=>'text-slate-700'
-            ],
+                    <div class="flex items-start gap-4">
 
-        ];
+                        <i
+                            data-lucide="badge-check"
+                            class="w-6 h-6 text-cyan-950">
+                        </i>
 
-    @endphp
+                        <span
+                            class="text-gray-700 leading-7">
 
-    <div class="grid md:grid-cols-2 gap-5">
+                            {{ trim($rule) }}
 
-        @foreach($rules as $rule)
+                        </span>
 
-            <div
-                class="flex items-start gap-4">
+                    </div>
 
-                <i
-                    data-lucide="{{ $rule['icon'] }}"
-                    class="w-6 h-6 {{ $rule['color'] }}">
-                </i>
+                @endif
 
-                <span
-                    class="text-gray-700 leading-7">
+            @endforeach
 
-                    {{ $rule['text'] }}
+        </div>
 
-                </span>
+    @else
 
-            </div>
+        <div class="text-center text-gray-500 py-6">
 
-        @endforeach
+            Belum ada peraturan kost.
 
-    </div>
+        </div>
+
+    @endif
 
 </div>
