@@ -15,7 +15,7 @@
             </span>
 
             <span class="font-semibold">
-                Rp 3.500.000
+                Rp {{ number_format($rental->boardingHouse->price,0,',','.') }}
             </span>
 
         </div>
@@ -46,7 +46,7 @@
 
         <h2 class="text-4xl font-bold text-cyan-950">
 
-            Rp 3.500.000
+            Rp {{ number_format($rental->total_price,0,',','.') }}
 
         </h2>
 

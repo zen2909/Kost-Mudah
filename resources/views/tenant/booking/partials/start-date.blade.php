@@ -8,12 +8,23 @@
 
         <input
             type="date"
-            class="w-full rounded-xl border border-gray-300 px-5 py-4 text-lg focus:ring-2 focus:ring-cyan-900 focus:border-cyan-900">
+            id="start_date"
+            name="start_date"
+            min="{{ now()->toDateString() }}"
+            value="{{ now()->toDateString() }}"
+            class="w-full rounded-xl border border-gray-300 px-5 py-4 pr-14 text-lg focus:ring-2 focus:ring-cyan-900 focus:border-cyan-900">
 
-        <i
-            data-lucide="calendar"
-            class="absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-500">
-        </i>
+        <button
+            type="button"
+            id="calendarButton"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-cyan-900">
+
+            <i
+                data-lucide="calendar"
+                class="w-6 h-6">
+            </i>
+
+        </button>
 
     </div>
 

@@ -7,7 +7,9 @@
         </p>
 
         <h2 class="text-3xl font-bold mt-2 text-cyan-950">
-            Rp2.500.000
+
+            Rp{{ number_format($currentBill?->total_price ?? 0,0,',','.') }}
+
         </h2>
 
     </div>
@@ -19,7 +21,9 @@
         </p>
 
         <h2 class="text-3xl font-bold mt-2 text-red-600">
-            05 Juli 2026
+
+            {{ $currentBill?->end_date?->format('d F Y') ?? '-' }}
+
         </h2>
 
     </div>
@@ -30,9 +34,23 @@
             Status
         </p>
 
-        <span class="mt-3 inline-flex rounded-full bg-red-100 px-4 py-2 text-sm font-semibold text-red-700">
-            Belum Dibayar
-        </span>
+        @if($currentBill)
+
+            <span class="mt-3 inline-flex rounded-full bg-red-100 px-4 py-2 text-sm font-semibold text-red-700">
+
+                Belum Dibayar
+
+            </span>
+
+        @else
+
+            <span class="mt-3 inline-flex rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700">
+
+                Tidak Ada Tagihan
+
+            </span>
+
+        @endif
 
     </div>
 

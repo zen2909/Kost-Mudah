@@ -1,64 +1,141 @@
 <div class="bg-white rounded-xl border shadow-sm p-6">
 
-<form>
+    <form method="GET" action="{{ route('tenant.kost.index') }}">
 
-<div class="grid grid-cols-4 gap-4">
+        <div class="grid lg:grid-cols-5 md:grid-cols-2 gap-4">
 
-<div>
+            {{-- Search --}}
+            <div>
+                <label class="text-xs font-semibold uppercase">
+                    Cari Kost
+                </label>
 
-<label class="text-xs font-semibold uppercase">
-Lokasi
-</label>
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Nama kost, alamat..."
+                    class="w-full mt-2 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-cyan-700 focus:border-cyan-700">
+            </div>
 
-<select class="w-full mt-2 border rounded-lg px-4 py-3">
+            {{-- Kelurahan --}}
+            <div>
+                <label class="text-xs font-semibold uppercase">
+                    Kelurahan
+                </label>
 
-<option>Jakarta Pusat</option>
+                <select
+                    name="kelurahan"
+                    class="w-full mt-2 border rounded-lg px-4 py-3">
 
-</select>
+                    <option value="">Semua Kelurahan</option>
 
-</div>
+                    @foreach($kelurahans as $kelurahan)
+                        <option
+                            value="{{ $kelurahan }}"
+                            {{ request('kelurahan') == $kelurahan ? 'selected' : '' }}>
+                            {{ $kelurahan }}
+                        </option>
+                    @endforeach
 
-<div>
+                </select>
+            </div>
 
-<label class="text-xs font-semibold uppercase">
-Rentang Harga
-</label>
+            {{-- Tipe Kost --}}
+            <div>
+                <label class="text-xs font-semibold uppercase">
+                    Tipe Kost
+                </label>
 
-<select class="w-full mt-2 border rounded-lg px-4 py-3">
+                <select
+                    name="type"
+                    class="w-full mt-2 border rounded-lg px-4 py-3">
 
-<option>Semua Harga</option>
+                    <option value="">Semua</option>
 
-</select>
+                    <option
+                        value="Putra"
+                        {{ request('type') == 'Putra' ? 'selected' : '' }}>
+                        Putra
+                    </option>
 
-</div>
+                    <option
+                        value="Putri"
+                        {{ request('type') == 'Putri' ? 'selected' : '' }}>
+                        Putri
+                    </option>
 
-<div>
+                    <option
+                        value="Campur"
+                        {{ request('type') == 'Campur' ? 'selected' : '' }}>
+                        Campur
+                    </option>
 
-<label class="text-xs font-semibold uppercase">
-Fasilitas
-</label>
+                </select>
+            </div>
 
-<select class="w-full mt-2 border rounded-lg px-4 py-3">
+            {{-- Harga --}}
+            <div>
+                <label class="text-xs font-semibold uppercase">
+                    Harga
+                </label>
 
-<option>AC & WiFi</option>
+                <select
+                    name="price"
+                    class="w-full mt-2 border rounded-lg px-4 py-3">
 
-</select>
+                    <option value="">Semua Harga</option>
 
-</div>
+                    <option
+                        value="1"
+                        {{ request('price') == '1' ? 'selected' : '' }}>
+                        ≤ Rp1.000.000
+                    </option>
 
-<div class="flex items-end">
+                    <option
+                        value="2"
+                        {{ request('price') == '2' ? 'selected' : '' }}>
+                        Rp1.000.000 - Rp2.000.000
+                    </option>
 
-<button
-class="w-full bg-cyan-950 hover:bg-cyan-900 text-white py-3 rounded-lg font-semibold">
+                    <option
+                        value="3"
+                        {{ request('price') == '3' ? 'selected' : '' }}>
+                        Rp2.000.000 - Rp3.000.000
+                    </option>
 
-Terapkan Filter
+                    <option
+                        value="4"
+                        {{ request('price') == '4' ? 'selected' : '' }}>
+                        > Rp3.000.000
+                    </option>
 
-</button>
+                </select>
+            </div>
 
-</div>
+            {{-- Tombol --}}
+            <div class="flex items-end gap-2">
 
-</div>
+                <button
+                    type="submit"
+                    class="w-full bg-cyan-900 hover:bg-cyan-800 text-white py-3 rounded-lg font-semibold">
 
-</form>
+                    Cari
+
+                </button>
+
+                <a
+                    href="{{ route('tenant.kost.index') }}"
+                    class="w-full border text-center py-3 rounded-lg hover:bg-gray-100">
+
+                    Reset
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
 
 </div>

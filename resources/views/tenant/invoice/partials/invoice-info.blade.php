@@ -7,14 +7,14 @@
         </p>
 
         <h3 class="text-xl font-semibold text-cyan-950 mt-1">
-            INV/202401/KM-8830
+            {{ $rental->unique_code }}
         </h3>
 
     </div>
 
     <div class="text-right text-gray-600">
 
-        15 Jan 2024, 14:30 WIB
+        {{ $rental->created_at->translatedFormat('d M Y, H:i') }} WIB
 
     </div>
 

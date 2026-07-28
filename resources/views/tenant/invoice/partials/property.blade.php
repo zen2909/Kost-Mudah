@@ -4,20 +4,32 @@
 
         <div class="flex items-center gap-4">
 
-            <div class="w-16 h-16 rounded-lg bg-cyan-950 flex items-center justify-center">
+            <div class="w-16 h-16 rounded-lg overflow-hidden">
 
-                <i data-lucide="building-2" class="w-8 h-8 text-white"></i>
+                @if($rental->boardingHouse->primaryPhoto)
+
+                    <img
+                        src="{{ asset('storage/'.$rental->boardingHouse->primaryPhoto->photo_path) }}"
+                        class="w-full h-full object-cover">
+
+                @else
+
+                    <div class="w-full h-full bg-cyan-950 flex items-center justify-center">
+                        <i data-lucide="building-2" class="w-8 h-8 text-white"></i>
+                    </div>
+
+                @endif
 
             </div>
 
             <div>
 
                 <h3 class="text-xl font-bold text-slate-900">
-                    Kost Menteng Residence
+                    {{ $rental->boardingHouse->name }}
                 </h3>
 
                 <p class="text-gray-600">
-                    Kamar 302 - Deluxe
+                    {{ $rental->boardingHouse->type }}
                 </p>
 
             </div>
@@ -35,7 +47,7 @@
                 </p>
 
                 <h4 class="font-semibold mt-1">
-                    1 Feb 2024
+                    {{ \Carbon\Carbon::parse($rental->start_date)->translatedFormat('d M Y') }}
                 </h4>
 
             </div>
@@ -47,7 +59,7 @@
                 </p>
 
                 <h4 class="font-semibold mt-1">
-                    1 Mar 2024
+                    {{ \Carbon\Carbon::parse($rental->end_date)->translatedFormat('d M Y') }}
                 </h4>
 
             </div>
@@ -59,7 +71,7 @@
                 </p>
 
                 <h4 class="font-semibold mt-1">
-                    1 Month
+                    {{ $rental->duration_months }} Bulan
                 </h4>
 
             </div>

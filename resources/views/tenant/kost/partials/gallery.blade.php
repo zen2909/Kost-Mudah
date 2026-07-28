@@ -1,16 +1,22 @@
+@php
+    $photos = $kost->photos;
+    $primary = $kost->primaryPhoto ?? $photos->first();
+@endphp
+
 <div class="grid lg:grid-cols-3 gap-4">
 
     {{-- Foto Utama --}}
     <div class="lg:col-span-2 relative">
 
         <img
-            src="https://placehold.co/900x650"
+            id="main-photo"
+            src="{{ $primary ? Storage::url($primary->path) : asset('images/no-image.jpg') }}"
             class="w-full h-[500px] object-cover rounded-xl">
 
         <span
             class="absolute bottom-5 left-5 bg-cyan-950/80 backdrop-blur text-white text-xs px-4 py-2 rounded-full tracking-wider">
 
-            UTAMA
+            FOTO UTAMA
 
         </span>
 
@@ -19,42 +25,44 @@
     {{-- Thumbnail --}}
     <div class="grid grid-cols-2 gap-4">
 
-        <img
-            src="https://placehold.co/400x300"
-            class="rounded-xl h-60 w-full object-cover">
-
-        <img
-            src="https://placehold.co/400x300"
-            class="rounded-xl h-60 w-full object-cover">
-
-        <img
-            src="https://placehold.co/400x300"
-            class="rounded-xl h-60 w-full object-cover">
-
-        <div class="relative">
+        @forelse($photos->take(4) as $photo)
 
             <img
-                src="https://placehold.co/400x300"
-                class="rounded-xl h-60 w-full object-cover brightness-50">
+                src="{{ Storage::url($photo->path) }}"
+                class="thumbnail rounded-xl h-60 w-full object-cover cursor-pointer hover:opacity-80 transition">
 
-            <div
-                class="absolute inset-0 flex flex-col justify-center items-center text-white">
+        @empty
 
-                <i
-                    data-lucide="grid-2x2"
-                    class="w-10 h-10 mb-2">
-                </i>
+            @for($i = 0; $i < 4; $i++)
 
-                <span class="text-xl font-semibold">
+                <img
+                    src="{{ asset('images/no-image.jpg') }}"
+                    class="rounded-xl h-60 w-full object-cover">
 
-                    +12 Foto
+            @endfor
 
-                </span>
-
-            </div>
-
-        </div>
+        @endforelse
 
     </div>
 
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const mainPhoto = document.getElementById('main-photo');
+
+    document.querySelectorAll('.thumbnail').forEach(function (thumbnail) {
+
+        thumbnail.addEventListener('click', function () {
+
+            mainPhoto.src = this.src;
+
+        });
+
+    });
+
+});
+</script>
+@endpush

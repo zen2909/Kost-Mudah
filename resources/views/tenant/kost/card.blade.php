@@ -1,166 +1,74 @@
-<div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
+<div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl transition duration-300">
+    @php
+        $isFavorite = isset($kost->favorites) && $kost->favorites->isNotEmpty();
+    @endphp
 
-    {{-- Gambar --}}
     <div class="relative">
-
-        <img
-            src="{{ $kost->gambar ?? 'https://placehold.co/600x400' }}"
-            class="w-full h-56 object-cover">
-
-        {{-- Badge --}}
-        @if(($kost->badge ?? 'verified') == 'verified')
-
-            <span
-                class="absolute top-3 left-3 bg-green-500/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded">
-
-                VERIFIED
-
-            </span>
-
+        @if($kost->primaryPhoto)
+            <img src="{{ Storage::url($kost->primaryPhoto->path) }}" alt="{{ $kost->name }}" class="w-full h-56 object-cover">
         @else
-
-            <span
-                class="absolute top-3 left-3 bg-gray-700/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded">
-
-                PROMO
-
-            </span>
-
+            <img src="{{ asset('images/no-image.jpg') }}" alt="No Image" class="w-full h-56 object-cover">
         @endif
 
-        {{-- Favorite --}}
-        <button
-            class="absolute top-3 right-3 w-9 h-9 rounded-full bg-red-500 flex items-center justify-center">
+        <div class="absolute top-3 left-3 flex gap-2">
+            <span class="bg-green-600 text-white text-xs px-3 py-1 rounded-full font-semibold">Verified</span>
+            <span class="bg-cyan-900 text-white text-xs px-3 py-1 rounded-full">{{ $kost->type }}</span>
+        </div>
 
-            <i data-lucide="heart"
-                class="w-5 h-5 text-white fill-white">
-            </i>
-
+        <button type="button"
+                class="favorite-btn absolute top-3 right-3 w-10 h-10 rounded-full bg-white shadow flex items-center justify-center hover:bg-red-50 transition"
+                data-id="{{ $kost->id }}">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="favorite-icon w-6 h-6 {{ $isFavorite ? 'text-red-600 fill-red-600' : 'text-gray-400' }}"
+                 viewBox="0 0 24 24"
+                 fill="{{ $isFavorite ? 'currentColor' : 'none' }}"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364 4.318 12.682a4.5 4.5 0 010-6.364z"/>
+            </svg>
         </button>
-
     </div>
 
-    {{-- Isi Card --}}
     <div class="p-5">
+        <h3 class="text-xl font-bold text-slate-900">{{ $kost->name }}</h3>
+        <div class="flex items-center mt-2 text-gray-500 text-sm">📍 {{ $kost->address }}</div>
 
-        {{-- Nama + Rating --}}
-        <div class="flex justify-between items-start">
+        <div class="flex items-center justify-between mt-4">
+            <div class="flex items-center gap-2">
+                ⭐
+                <span class="font-semibold">{{ number_format($kost->averageRating(),1) }}</span>
+                <span class="text-gray-500">({{ $kost->reviews->count() }} ulasan)</span>
+            </div>
+        </div>
 
+        @if($kost->facilities)
+            <div class="flex flex-wrap gap-2 mt-4">
+                @foreach(array_slice((array)$kost->facilities,0,4) as $facility)
+                    <span class="bg-gray-100 px-3 py-1 rounded-full text-xs">{{ $facility }}</span>
+                @endforeach
+            </div>
+        @endif
+
+        <div class="mt-5">
+            @if($kost->available_rooms > 0)
+                <span class="text-green-600 font-semibold">{{ $kost->available_rooms }} kamar tersedia</span>
+            @else
+                <span class="text-red-600 font-semibold">Penuh</span>
+            @endif
+        </div>
+
+        <div class="border-t mt-6 pt-5 flex justify-between items-center">
             <div>
-
-                <h3 class="text-xl font-semibold text-slate-900">
-
-                    {{ $kost->nama ?? 'Kost Menteng Residence' }}
-
-                </h3>
-
+                <div class="text-2xl font-bold text-cyan-900">
+                    Rp{{ number_format($kost->price_per_month,0,',','.') }}
+                </div>
+                <div class="text-sm text-gray-500">/bulan</div>
             </div>
 
-            <div class="flex items-center gap-1">
-
-                <i data-lucide="star"
-                    class="w-4 h-4 text-yellow-500 fill-yellow-500">
-                </i>
-
-                <span class="text-sm font-semibold text-gray-700">
-
-                    {{ $kost->rating ?? '4.8' }}
-
-                </span>
-
-            </div>
-
-        </div>
-
-        {{-- Lokasi --}}
-        <div class="flex items-center gap-1 mt-2 text-gray-600">
-
-            <i data-lucide="map-pin"
-                class="w-4 h-4">
-            </i>
-
-            <span class="text-sm">
-
-                {{ $kost->lokasi ?? 'Menteng, Jakarta Pusat' }}
-
-            </span>
-
-        </div>
-
-        {{-- Fasilitas --}}
-        <div class="flex flex-wrap gap-3 mt-4">
-
-            <div class="flex items-center gap-1 text-xs text-gray-700">
-
-                <i data-lucide="snowflake"
-                    class="w-4 h-4">
-                </i>
-
-                AC
-
-            </div>
-
-            <div class="flex items-center gap-1 text-xs text-gray-700">
-
-                <i data-lucide="wifi"
-                    class="w-4 h-4">
-                </i>
-
-                WiFi
-
-            </div>
-
-            <div class="flex items-center gap-1 text-xs text-gray-700">
-
-                <i data-lucide="bath"
-                    class="w-4 h-4">
-                </i>
-
-                KM Dalam
-
-            </div>
-
-            <div class="flex items-center gap-1 text-xs text-gray-700">
-
-                <i data-lucide="car"
-                    class="w-4 h-4">
-                </i>
-
-                Parkir
-
-            </div>
-
-        </div>
-
-        {{-- Harga --}}
-        <div class="border-t mt-5 pt-5 flex justify-between items-center">
-
-            <div>
-
-                <h4 class="text-2xl font-bold text-slate-900">
-
-                    {{ $kost->harga ?? 'Rp 3.500.000' }}
-
-                </h4>
-
-                <p class="text-sm text-gray-500">
-
-                    /bulan
-
-                </p>
-
-            </div>
-
-            <a
-                href="{{ route('tenant.kost.show') }}"
-                class="w-full bg-cyan-950 text-white rounded-lg py-3 flex justify-center">
-
-                View Detail
-
+            <a href="{{ route('tenant.kost.show',$kost->slug) }}"
+               class="bg-cyan-900 hover:bg-cyan-800 text-white px-5 py-3 rounded-lg font-semibold">
+                Detail
             </a>
-
         </div>
-
     </div>
-
 </div>

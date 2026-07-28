@@ -99,6 +99,37 @@
                 </span>
             </a>
 
+                        <!-- Tagihan -->
+            <a href="{{ route('tenant.bills.index') }}"
+                class="group-item flex items-center px-3 py-3 rounded-lg transition-all duration-200 gap-3 relative {{ request()->routeIs('tenant.bills.*') ? 'bg-white/10' : 'hover:bg-white/5' }}">
+
+                <svg class="w-[22px] h-[18px] flex-shrink-0 {{ request()->routeIs('tenant.bills.*') ? 'text-white' : 'text-[#7390A9]' }}"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                    <path stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 14l2 2 4-4M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/>
+
+                </svg>
+
+                <span
+                    class="menu-text text-sm transition-all duration-300 whitespace-nowrap overflow-hidden {{ request()->routeIs('tenant.bills.*') ? 'text-white' : 'text-[#7390A9]' }}">
+
+                    Tagihan
+
+                </span>
+
+                <span
+                    class="hidden absolute left-[56px] bg-[#001220] text-white text-xs px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap pointer-events-none z-50
+                    before:content-[''] before:absolute before:-left-1.5 before:top-1/2 before:-translate-y-1/2 before:border-[6px] before:border-transparent before:border-r-[#001220]">
+
+                    Tagihan
+
+                </span>
+
+            </a>
+
             <!-- Profil Saya -->
             <a href="{{ route('tenant.profile.index') }}"
                 class="group-item flex items-center px-3 py-3 rounded-lg transition-all duration-200 gap-3 relative {{ request()->routeIs('tenant.profile.*') ? 'bg-white/10' : 'hover:bg-white/5' }}">

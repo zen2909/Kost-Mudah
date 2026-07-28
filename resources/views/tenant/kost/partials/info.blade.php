@@ -13,7 +13,7 @@
         <span
             class="px-3 py-1 bg-sky-100 text-cyan-950 text-xs font-bold rounded">
 
-            PUTRA
+            {{ strtoupper($kost->type) }}
 
         </span>
 
@@ -26,7 +26,7 @@
 
             <h1 class="text-4xl font-bold text-slate-900">
 
-                Kost Menteng Residence
+                {{ $kost->name }}
 
             </h1>
 
@@ -40,9 +40,11 @@
 
                 <span>
 
-                    Jl. Teuku Umar No.12,
-                    Kelurahan Gondangdia,
-                    Jakarta Pusat
+                    {{ $kost->address }}
+
+                    @if($kost->kelurahan)
+                        , {{ $kost->kelurahan }}
+                    @endif
 
                 </span>
 
@@ -63,13 +65,13 @@
 
                 <div class="font-bold">
 
-                    4.8
+                    {{ number_format($kost->averageRating(),1) }}
 
                 </div>
 
                 <div class="text-xs text-gray-500">
 
-                    128 Ulasan
+                    {{ $kost->reviews->count() }} Ulasan
 
                 </div>
 
@@ -79,14 +81,28 @@
 
     </div>
 
+    {{-- Harga --}}
+    <div class="mt-5">
+
+        <span class="text-3xl font-bold text-cyan-900">
+
+            Rp{{ number_format($kost->price_per_month,0,',','.') }}
+
+        </span>
+
+        <span class="text-gray-500">
+
+            /bulan
+
+        </span>
+
+    </div>
+
     {{-- Deskripsi --}}
     <p
         class="mt-6 text-gray-600 leading-8">
 
-        Kost eksklusif dengan lokasi strategis di pusat kota.
-        Dilengkapi fasilitas lengkap seperti WiFi berkecepatan tinggi,
-        AC, kamar mandi dalam, CCTV 24 jam, area parkir,
-        serta keamanan yang nyaman bagi penghuni.
+        {{ $kost->description }}
 
     </p>
 
