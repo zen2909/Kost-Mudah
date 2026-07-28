@@ -149,6 +149,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/profile/photo', [OwnerProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
         Route::delete('/profile/photo', [OwnerProfileController::class, 'removePhoto'])->name('profile.removePhoto');
         Route::put('/profile/bank', [OwnerProfileController::class, 'updateBank'])->name('profile.updateBank');
+        Route::put('/profile/ewallet', [OwnerProfileController::class, 'updateEwallet'])->name('profile.updateEwallet');
         Route::put('/profile/password', [OwnerProfileController::class, 'updatePassword'])->name('profile.updatePassword');
         Route::delete('/profile', [OwnerProfileController::class, 'destroy'])->name('profile.destroy');
     });
@@ -197,8 +198,8 @@ Route::middleware(['role:tenant'])
         Route::post('/payment/{rental}', [TenantController::class, 'storePayment'])
             ->name('payment.store');
 
-        Route::get('/invoice/{rental}', [TenantController::class, 'invoice'])
-            ->name('invoice.index');
+        Route::get('/invoice/{rental}', [TenantController::class, 'invoice'])->name('invoice.index');
+    Route::get('/invoice/{rental}/json', [TenantController::class, 'invoiceJson'])->name('invoice.json');
 
         Route::get('/tagihan', [TenantController::class, 'bills'])
             ->name('bills.index');

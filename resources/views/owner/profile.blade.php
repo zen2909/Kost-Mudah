@@ -165,7 +165,7 @@
                     </div>
                 </form>
 
-                <!-- Rekening Pencairan Sewa & Keamanan - 2 Kolom -->
+                <!-- Rekening Pencairan Sewa & E-Wallet - 2 Kolom -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Rekening Pencairan Sewa -->
                     <form action="{{ route('owner.profile.updateBank') }}" method="POST"
@@ -243,54 +243,196 @@
                         </div>
                     </form>
 
-                    <!-- Keamanan & Password -->
-                    <form action="{{ route('owner.profile.updatePassword') }}" method="POST"
+                    <!-- E-Wallet Section - Ganti dengan 3 E-Wallet -->
+
+
+                    <!-- E-Wallet Settings -->
+                    <form action="{{ route('owner.profile.updateEwallet') }}" method="POST"
+                        enctype="multipart/form-data"
                         class="bg-white rounded-xl border border-[#C3C7CD] shadow-sm overflow-hidden">
                         @csrf
                         @method('PUT')
                         <div class="px-6 py-4 bg-[#F2F4F5] border-b border-[#C3C7CD]">
-                            <h3 class="text-[#001220] text-xl font-semibold">Keamanan & Password</h3>
+                            <h3 class="text-[#001220] text-xl font-semibold">E-Wallet & QRIS</h3>
                         </div>
                         <div class="p-6 space-y-4">
-                            <!-- Password -->
-                            <div class="p-3 bg-[#F8FAFB] rounded-lg border border-[#C3C7CD]">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <div
-                                        class="w-8 h-8 bg-[#001220]/10 rounded-full flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-3.5 h-4 text-[#001220]" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-[#001220] text-xs font-semibold tracking-wide">Password Akun</p>
-                                        <p class="text-[#42474C] text-xs">Terakhir diubah 3 bulan lalu</p>
-                                    </div>
+                            <!-- Info Alert -->
+                            <div class="flex items-start gap-3 p-3 bg-[#CFE6EF]/30 rounded-lg border border-[#CFE6EF]">
+                                <svg class="w-4 h-4 text-[#0194DC] flex-shrink-0 mt-0.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p class="text-[#354A51] text-xs">Penyewa dapat membayar melalui E-Wallet yang Anda
+                                    daftarkan atau scan QRIS.</p>
+                            </div>
+
+                            <!-- OVO -->
+                            <div>
+                                <label class="block text-[#42474C] text-xs font-semibold tracking-wide uppercase mb-1">
+                                    <span class="inline-flex items-center gap-2">
+                                        <span
+                                            class="w-4 h-4 bg-purple-100 rounded-full flex items-center justify-center text-xs font-bold text-purple-600">O</span>
+                                        OVO
+                                    </span>
+                                </label>
+                                <input type="text" name="ewallet_ovo"
+                                    value="{{ old('ewallet_ovo', $owner->ewallet_ovo ?? '') }}"
+                                    class="w-full px-4 py-2.5 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-[#191C1D] text-sm transition-shadow"
+                                    placeholder="Masukkan nomor OVO (contoh: 081234567890)">
+                                @error('ewallet_ovo')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- DANA -->
+                            <div>
+                                <label class="block text-[#42474C] text-xs font-semibold tracking-wide uppercase mb-1">
+                                    <span class="inline-flex items-center gap-2">
+                                        <span
+                                            class="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-600">D</span>
+                                        DANA
+                                    </span>
+                                </label>
+                                <input type="text" name="ewallet_dana"
+                                    value="{{ old('ewallet_dana', $owner->ewallet_dana ?? '') }}"
+                                    class="w-full px-4 py-2.5 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-[#191C1D] text-sm transition-shadow"
+                                    placeholder="Masukkan nomor DANA (contoh: 081234567890)">
+                                @error('ewallet_dana')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- ShopeePay -->
+                            <div>
+                                <label class="block text-[#42474C] text-xs font-semibold tracking-wide uppercase mb-1">
+                                    <span class="inline-flex items-center gap-2">
+                                        <span
+                                            class="w-4 h-4 bg-orange-100 rounded-full flex items-center justify-center text-xs font-bold text-orange-500">SP</span>
+                                        ShopeePay
+                                    </span>
+                                </label>
+                                <input type="text" name="ewallet_shopeepay"
+                                    value="{{ old('ewallet_shopeepay', $owner->ewallet_shopeepay ?? '') }}"
+                                    class="w-full px-4 py-2.5 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-[#191C1D] text-sm transition-shadow"
+                                    placeholder="Masukkan nomor ShopeePay (contoh: 081234567890)">
+                                @error('ewallet_shopeepay')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- QRIS Settings -->
+                            <div class="pt-4 border-t border-neutral-300/30">
+                                <h4 class="text-[#001220] text-base font-semibold mb-3">Pengaturan QRIS</h4>
+
+                                <!-- Pilih E-Wallet untuk QRIS -->
+                                <div>
+                                    <label
+                                        class="block text-[#42474C] text-xs font-semibold tracking-wide uppercase mb-1">E-Wallet
+                                        Utama untuk QRIS</label>
+                                    <select name="qris_ewallet"
+                                        class="w-full px-4 py-2.5 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-[#191C1D] text-sm transition-shadow">
+                                        <option value="">Pilih E-Wallet untuk QRIS</option>
+                                        @if ($owner && $owner->ewallet_ovo)
+                                            <option value="ovo" {{ $owner->qris_ewallet == 'ovo' ? 'selected' : '' }}>
+                                                OVO - {{ $owner->ewallet_ovo }}</option>
+                                        @endif
+                                        @if ($owner && $owner->ewallet_dana)
+                                            <option value="dana" {{ $owner->qris_ewallet == 'dana' ? 'selected' : '' }}>
+                                                DANA - {{ $owner->ewallet_dana }}</option>
+                                        @endif
+                                        @if ($owner && $owner->ewallet_shopeepay)
+                                            <option value="shopeepay"
+                                                {{ $owner->qris_ewallet == 'shopeepay' ? 'selected' : '' }}>ShopeePay -
+                                                {{ $owner->ewallet_shopeepay }}</option>
+                                        @endif
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">QRIS akan mengarah ke E-Wallet yang dipilih</p>
+                                    @error('qris_ewallet')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
                                 </div>
-                                <div class="space-y-2.5">
-                                    <input type="password" name="current_password" placeholder="Password Saat Ini"
-                                        class="w-full px-3 py-2 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-sm transition-shadow">
-                                    @error('current_password')
-                                        <p class="text-red-500 text-xs">{{ $message }}</p>
+
+                                <!-- Upload QRIS Image -->
+                                <div class="mt-3">
+                                    <label
+                                        class="block text-[#42474C] text-xs font-semibold tracking-wide uppercase mb-1">Upload
+                                        QRIS</label>
+
+                                    <!-- Preview QRIS -->
+                                    @if ($owner && $owner->qris_image)
+                                        <div class="mb-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                            <p class="text-xs text-gray-500 mb-2">QRIS Saat Ini:</p>
+                                            <img src="{{ Storage::url($owner->qris_image) }}" alt="QRIS"
+                                                class="w-32 h-32 object-contain border rounded-lg bg-white p-2">
+                                        </div>
+                                    @endif
+
+                                    <input type="file" name="qris_image" accept="image/png,image/jpeg,image/jpg"
+                                        class="w-full px-4 py-2.5 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-[#191C1D] text-sm transition-shadow file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#06283D] file:text-white hover:file:bg-[#001220]">
+                                    <p class="text-xs text-gray-500 mt-1">Format: PNG, JPG, JPEG (Max 2MB). Biarkan kosong
+                                        jika tidak ingin mengubah.</p>
+                                    @error('qris_image')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
-                                    <input type="password" name="new_password" placeholder="Password Baru"
-                                        class="w-full px-3 py-2 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-sm transition-shadow">
-                                    @error('new_password')
-                                        <p class="text-red-500 text-xs">{{ $message }}</p>
-                                    @enderror
-                                    <input type="password" name="new_password_confirmation"
-                                        placeholder="Konfirmasi Password Baru"
-                                        class="w-full px-3 py-2 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-sm transition-shadow">
-                                    <button type="submit"
-                                        class="w-full py-2 bg-[#001220] text-white text-sm font-semibold rounded-lg hover:bg-[#06283D] transition-colors">
-                                        Update Password
-                                    </button>
                                 </div>
                             </div>
+
+                            <button type="submit"
+                                class="w-full py-2.5 bg-[#001220] text-white text-sm font-semibold rounded-lg hover:bg-[#06283D] transition-colors">
+                                Update E-Wallet & QRIS
+                            </button>
                         </div>
                     </form>
+
                 </div>
+
+                <!-- Keamanan & Password -->
+                <form action="{{ route('owner.profile.updatePassword') }}" method="POST"
+                    class="bg-white rounded-xl border border-[#C3C7CD] shadow-sm overflow-hidden">
+                    @csrf
+                    @method('PUT')
+                    <div class="px-6 py-4 bg-[#F2F4F5] border-b border-[#C3C7CD]">
+                        <h3 class="text-[#001220] text-xl font-semibold">Keamanan & Password</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="p-3 bg-[#F8FAFB] rounded-lg border border-[#C3C7CD]">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div
+                                    class="w-8 h-8 bg-[#001220]/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-4 text-[#001220]" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-[#001220] text-xs font-semibold tracking-wide">Password Akun</p>
+                                    <p class="text-[#42474C] text-xs">Terakhir diubah 3 bulan lalu</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2.5">
+                                <input type="password" name="current_password" placeholder="Password Saat Ini"
+                                    class="w-full px-3 py-2 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-sm transition-shadow">
+                                @error('current_password')
+                                    <p class="text-red-500 text-xs">{{ $message }}</p>
+                                @enderror
+                                <input type="password" name="new_password" placeholder="Password Baru"
+                                    class="w-full px-3 py-2 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-sm transition-shadow">
+                                @error('new_password')
+                                    <p class="text-red-500 text-xs">{{ $message }}</p>
+                                @enderror
+                                <input type="password" name="new_password_confirmation"
+                                    placeholder="Konfirmasi Password Baru"
+                                    class="w-full px-3 py-2 bg-white border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-sm transition-shadow">
+                                <button type="submit"
+                                    class="w-full py-2 bg-[#001220] text-white text-sm font-semibold rounded-lg hover:bg-[#06283D] transition-colors">
+                                    Update Password
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -332,7 +474,6 @@
                 const formData = new FormData();
                 formData.append('photo', file);
 
-                // Show loading
                 const photoImg = document.getElementById('profilePhoto');
                 const originalSrc = photoImg.src;
                 photoImg.style.opacity = '0.5';
@@ -349,11 +490,7 @@
                         if (data.success) {
                             photoImg.src = data.photo_url + '?t=' + new Date().getTime();
                             photoImg.style.opacity = '1';
-
-                            // Tampilkan notifikasi sukses
                             showNotification('success', data.message);
-
-                            // Refresh halaman setelah 2 detik
                             setTimeout(() => {
                                 location.reload();
                             }, 2000);

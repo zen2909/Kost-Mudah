@@ -39,6 +39,10 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => ['required', 'in:tenant,owner'],
             'terms' => ['required', 'accepted'],
+            // Validasi occupation hanya jika role tenant
+            'occupation' => ['required_if:role,tenant', 'nullable', 'string', 'max:255'],
+            // Validasi gender hanya jika role tenant dengan nilai L atau P
+            'gender' => ['required_if:role,tenant', 'nullable', 'in:L,P'],
         ]);
 
         // Buat user
@@ -47,7 +51,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
-            'role' => $request->role, // Set kolom role di users
+            'role' => $request->role,
         ]);
 
         // Assign role menggunakan Spatie Permission
@@ -62,12 +66,12 @@ class RegisteredUserController extends Controller
             ]);
         }
 
-        // Jika role tenant, buat record di tabel tenants
+        // Jika role tenant, buat record di tabel tenants dengan occupation dan gender
         if ($request->role === 'tenant') {
             Tenant::create([
                 'user_id' => $user->id,
-                'occupation' => null,
-                'gender' => null,
+                'occupation' => $request->occupation,
+                'gender' => $request->gender, // Nilai L atau P
             ]);
         }
 
