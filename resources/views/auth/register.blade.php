@@ -100,6 +100,56 @@
                     @enderror
                 </div>
 
+                <!-- Occupation (hanya untuk tenant) -->
+                <div id="occupationField" class="{{ old('role', 'tenant') == 'owner' ? 'hidden' : '' }}">
+                    <label
+                        class="block text-[#42474C] text-xs font-semibold tracking-wider uppercase mb-1">Occupation</label>
+                    <input type="text" name="occupation" value="{{ old('occupation') }}"
+                        class="w-full px-4 py-2.5 bg-[#F8FAFB] border border-[#C3C7CD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06283D] text-[#191C1D] placeholder:text-[#6B7280] transition-shadow text-sm"
+                        placeholder="e.g., Student, Employee, Entrepreneur">
+                    @error('occupation')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Gender (hanya untuk tenant) -->
+                <div id="genderField" class="{{ old('role', 'tenant') == 'owner' ? 'hidden' : '' }}">
+                    <label
+                        class="block text-[#42474C] text-xs font-semibold tracking-wider uppercase mb-1">Gender</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="gender" value="L"
+                                {{ old('gender') == 'L' ? 'checked' : '' }} class="hidden peer">
+                            <div
+                                class="flex items-center justify-center p-3 rounded-lg border border-[#C3C7CD] bg-white peer-checked:bg-[#CFE6EF] peer-checked:border-[#06283D] transition-all hover:border-[#06283D]">
+                                <svg class="w-5 h-5 text-[#06283D] mr-2" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 3a1 1 0 011 1v4a1 1 0 01-1 1m0 0a1 1 0 01-1-1V4a1 1 0 011-1zm0 0h2a3 3 0 013 3v1a3 3 0 01-3 3h-2m-6 0V7a3 3 0 013-3h3m-6 0a3 3 0 00-3 3v3m0 0v9m0-9h6m-6 0h6" />
+                                </svg>
+                                <span class="text-[#191C1D] text-sm font-semibold">Laki-laki</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="gender" value="P"
+                                {{ old('gender') == 'P' ? 'checked' : '' }} class="hidden peer">
+                            <div
+                                class="flex items-center justify-center p-3 rounded-lg border border-[#C3C7CD] bg-white peer-checked:bg-[#CFE6EF] peer-checked:border-[#06283D] transition-all hover:border-[#06283D]">
+                                <svg class="w-5 h-5 text-[#06283D] mr-2" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 3a1 1 0 011 1v4a1 1 0 01-1 1m0 0a1 1 0 01-1-1V4a1 1 0 011-1zm0 0h2a3 3 0 013 3v1a3 3 0 01-3 3h-2m-6 0V7a3 3 0 013-3h3m-6 0a3 3 0 00-3 3v3m0 0v9m0-9h6m-6 0h6" />
+                                </svg>
+                                <span class="text-[#191C1D] text-sm font-semibold">Perempuan</span>
+                            </div>
+                        </label>
+                    </div>
+                    @error('gender')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Full Name -->
                     <div>
@@ -128,7 +178,8 @@
 
                 <!-- Phone -->
                 <div>
-                    <label class="block text-[#42474C] text-xs font-semibold tracking-wider uppercase mb-1">Phone Number
+                    <label class="block text-[#42474C] text-xs font-semibold tracking-wider uppercase mb-1">Phone
+                        Number
                         (WhatsApp)</label>
                     <div class="flex">
                         <div
@@ -221,16 +272,47 @@
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 eyeIcon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
-                `;
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+            `;
             } else {
                 passwordInput.type = 'password';
                 eyeIcon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                `;
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            `;
             }
         }
+
+        // Toggle tenant-specific fields based on role selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleRadios = document.querySelectorAll('input[name="role"]');
+            const occupationField = document.getElementById('occupationField');
+            const genderField = document.getElementById('genderField');
+
+            function toggleTenantFields() {
+                const selectedRole = document.querySelector('input[name="role"]:checked');
+                if (selectedRole && selectedRole.value === 'tenant') {
+                    occupationField.classList.remove('hidden');
+                    genderField.classList.remove('hidden');
+                } else {
+                    occupationField.classList.add('hidden');
+                    genderField.classList.add('hidden');
+                    // Clear values when hidden
+                    document.querySelector('input[name="occupation"]').value = '';
+                    document.querySelectorAll('input[name="gender"]').forEach(radio => {
+                        radio.checked = false;
+                    });
+                }
+            }
+
+            // Initial toggle
+            toggleTenantFields();
+
+            // Add event listeners
+            roleRadios.forEach(radio => {
+                radio.addEventListener('change', toggleTenantFields);
+            });
+        });
     </script>
 </body>
 

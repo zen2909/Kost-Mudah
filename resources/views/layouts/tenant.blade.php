@@ -5,109 +5,294 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/android-chrome-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('images/android-chrome-512x512.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}">
+    <title>@yield('title', 'Dashboard Tenant - KostMudah')</title>
 
-    <title>@yield('title','Dashboard Tenant - KostMudah')</title>
-
-    @vite(['resources/css/app.css','resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>
 
 <body class="bg-gray-50">
 
-<div class="flex min-h-screen">
+    <div class="flex min-h-screen">
 
-    {{-- Sidebar --}}
-    @include('components.tenant.sidebar')
+        {{-- Sidebar --}}
+        @include('components.tenant.sidebar')
 
-    {{-- Main --}}
-    <div id="mainContent"
-         class="flex-1 ml-[263px] transition-all duration-300 ease-in-out">
+        {{-- Main --}}
+        <div id="mainContent" class="flex-1 ml-[263px] transition-all duration-300 ease-in-out">
 
-        {{-- Header --}}
-        @include('components.tenant.header')
+            {{-- Header --}}
+            @include('components.tenant.header')
 
-        {{-- Content --}}
-        <main class="p-6">
-            @yield('content')
-        </main>
+            {{-- Content --}}
+            <main class="p-6">
+                @yield('content')
+            </main>
+
+        </div>
 
     </div>
 
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+    {{-- Script Toggle Sidebar --}}
+    <script>
+        let isSidebarOpen = true;
 
-    function initFavoriteButtons() {
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const logoContainer = document.getElementById('logoContainer');
 
-        document.querySelectorAll('.favorite-btn').forEach(button => {
+            if (!sidebar || !mainContent) return;
 
-            if (button.dataset.initialized) return;
-            button.dataset.initialized = "true";
+            if (isSidebarOpen) {
+                // Collapse sidebar
+                sidebar.style.width = '72px';
+                mainContent.style.marginLeft = '72px';
 
-            button.addEventListener('click', function (e) {
+                // Logo container - sejajarkan dengan menu (padding kiri 12px)
+                if (logoContainer) {
+                    logoContainer.style.marginLeft = '0px';
+                    logoContainer.style.width = '40px';
+                    logoContainer.style.height = '40px';
+                    logoContainer.style.padding = '6px';
+                    logoContainer.style.borderRadius = '10px';
+                }
 
-                e.preventDefault();
-
-                const id = this.dataset.id;
-                const icon = this.querySelector('.favorite-icon');
-
-                fetch(`/tenant/favorite/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                // Sembunyikan semua teks
+                document.querySelectorAll('#sidebar .menu-text, #sidebar .logo-text').forEach(el => {
+                    if (el) {
+                        el.style.width = '0';
+                        el.style.margin = '0';
+                        el.style.padding = '0';
+                        el.style.opacity = '0';
+                        el.style.overflow = 'hidden';
+                        el.style.minWidth = '0';
                     }
-                })
-                .then(response => response.json())
-                .then(data => {
+                });
 
-                    if (!data.success) return;
-
-                    if (data.favorited) {
-
-                        icon.classList.remove('text-gray-400');
-                        icon.classList.add('text-red-600', 'fill-red-600');
-                        icon.setAttribute('fill', 'currentColor');
-
-                    } else {
-
-                        icon.classList.remove('text-red-600', 'fill-red-600');
-                        icon.classList.add('text-gray-400');
-                        icon.setAttribute('fill', 'none');
-
+                // Sembunyikan tooltip
+                document.querySelectorAll('#sidebar .group-item > span:last-child').forEach(el => {
+                    if (el && !el.classList.contains('hidden')) {
+                        el.classList.add('hidden');
                     }
+                });
 
-                    // Jika sedang di halaman Favorit dan kost dihapus,
-                    // hilangkan card tanpa reload.
-                    if (!data.favorited) {
+                if (toggleIcon) {
+                    toggleIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                `;
+                }
 
-                        const favoriteCard = button.closest('.favorite-card');
+                isSidebarOpen = false;
+            } else {
+                // Expand sidebar
+                sidebar.style.width = '263px';
+                mainContent.style.marginLeft = '263px';
 
-                        if (favoriteCard) {
-                            favoriteCard.remove();
+                // Logo container - kembali ke ukuran normal
+                if (logoContainer) {
+                    logoContainer.style.marginLeft = '0';
+                    logoContainer.style.width = '56px';
+                    logoContainer.style.height = '56px';
+                    logoContainer.style.padding = '8px';
+                    logoContainer.style.borderRadius = '12px';
+                }
 
-                            if (document.querySelectorAll('.favorite-card').length === 0) {
-                                location.reload();
-                            }
+                // Tampilkan semua teks
+                document.querySelectorAll('#sidebar .menu-text, #sidebar .logo-text').forEach(el => {
+                    if (el) {
+                        el.style.width = '';
+                        el.style.margin = '';
+                        el.style.padding = '';
+                        el.style.opacity = '1';
+                        el.style.overflow = '';
+                        el.style.minWidth = '';
+                    }
+                });
+
+                if (toggleIcon) {
+                    toggleIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                `;
+                }
+
+                isSidebarOpen = true;
+            }
+        }
+
+        // Tooltip on hover
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#sidebar .group-item').forEach(item => {
+                if (!item) return;
+
+                item.addEventListener('mouseenter', function(e) {
+                    if (!isSidebarOpen) {
+                        const tooltip = this.querySelector('span:last-child');
+                        if (tooltip && tooltip.classList.contains('hidden')) {
+                            tooltip.classList.remove('hidden');
                         }
                     }
+                });
 
-                })
-                .catch(error => console.error(error));
-
+                item.addEventListener('mouseleave', function(e) {
+                    const tooltip = this.querySelector('span:last-child');
+                    if (tooltip) {
+                        tooltip.classList.add('hidden');
+                    }
+                });
             });
 
+            // Responsive
+            function handleResize() {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.getElementById('mainContent');
+                const logoContainer = document.getElementById('logoContainer');
+
+                if (!sidebar || !mainContent) return;
+
+                if (window.innerWidth < 768 && isSidebarOpen) {
+                    sidebar.style.width = '72px';
+                    mainContent.style.marginLeft = '72px';
+
+                    if (logoContainer) {
+                        logoContainer.style.marginLeft = '0px';
+                        logoContainer.style.width = '50px';
+                        logoContainer.style.height = '50px';
+                        logoContainer.style.padding = '6px';
+                        logoContainer.style.borderRadius = '10px';
+                    }
+
+                    document.querySelectorAll('#sidebar .menu-text, #sidebar .logo-text').forEach(el => {
+                        if (el) {
+                            el.style.width = '0';
+                            el.style.margin = '0';
+                            el.style.padding = '0';
+                            el.style.opacity = '0';
+                            el.style.overflow = 'hidden';
+                            el.style.minWidth = '0';
+                        }
+                    });
+
+                    isSidebarOpen = false;
+                } else if (window.innerWidth >= 768 && !isSidebarOpen) {
+                    sidebar.style.width = '263px';
+                    mainContent.style.marginLeft = '263px';
+
+                    if (logoContainer) {
+                        logoContainer.style.marginLeft = '0';
+                        logoContainer.style.width = '56px';
+                        logoContainer.style.height = '56px';
+                        logoContainer.style.padding = '8px';
+                        logoContainer.style.borderRadius = '12px';
+                    }
+
+                    document.querySelectorAll('#sidebar .menu-text, #sidebar .logo-text').forEach(el => {
+                        if (el) {
+                            el.style.width = '';
+                            el.style.margin = '';
+                            el.style.padding = '';
+                            el.style.opacity = '1';
+                            el.style.overflow = '';
+                            el.style.minWidth = '';
+                        }
+                    });
+
+                    isSidebarOpen = true;
+                }
+            }
+
+            handleResize();
+            window.addEventListener('resize', handleResize);
         });
+    </script>
 
-    }
+    {{-- Script Favorite --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-    initFavoriteButtons();
+            function initFavoriteButtons() {
 
-});
-</script>
-@stack('scripts')
+                document.querySelectorAll('.favorite-btn').forEach(button => {
+
+                    if (button.dataset.initialized) return;
+                    button.dataset.initialized = "true";
+
+                    button.addEventListener('click', function(e) {
+
+                        e.preventDefault();
+
+                        const id = this.dataset.id;
+                        const icon = this.querySelector('.favorite-icon');
+
+                        fetch(`/tenant/favorite/${id}`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').content,
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+
+                                if (!data.success) return;
+
+                                if (data.favorited) {
+
+                                    icon.classList.remove('text-gray-400');
+                                    icon.classList.add('text-red-600', 'fill-red-600');
+                                    icon.setAttribute('fill', 'currentColor');
+
+                                } else {
+
+                                    icon.classList.remove('text-red-600', 'fill-red-600');
+                                    icon.classList.add('text-gray-400');
+                                    icon.setAttribute('fill', 'none');
+
+                                }
+
+                                // Jika sedang di halaman Favorit dan kost dihapus,
+                                // hilangkan card tanpa reload.
+                                if (!data.favorited) {
+
+                                    const favoriteCard = button.closest('.favorite-card');
+
+                                    if (favoriteCard) {
+                                        favoriteCard.remove();
+
+                                        if (document.querySelectorAll('.favorite-card')
+                                            .length === 0) {
+                                            location.reload();
+                                        }
+                                    }
+                                }
+
+                            })
+                            .catch(error => console.error(error));
+
+                    });
+
+                });
+
+            }
+
+            initFavoriteButtons();
+
+
+        });
+    </script>
+
+    @stack('scripts')
 
 </body>
+
 </html>

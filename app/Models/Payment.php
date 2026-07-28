@@ -19,6 +19,7 @@ class Payment extends Model
         'verified_at',
         'verified_by',
         'rejection_reason',
+        'ewallet_provider',
     ];
 
     protected $casts = [

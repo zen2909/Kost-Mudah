@@ -58,17 +58,15 @@ class ProfileController extends Controller
     public function updatePhoto(Request $request)
     {
         $request->validate([
-            'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Max 2MB
+            'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $user = Auth::user();
 
-        // Hapus foto lama jika ada
         if ($user->photo && Storage::disk('public')->exists($user->photo)) {
             Storage::disk('public')->delete($user->photo);
         }
 
-        // Upload foto baru
         $file = $request->file('photo');
         $fileName = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs('profiles', $fileName, 'public');
@@ -136,6 +134,58 @@ class ProfileController extends Controller
     }
 
     /**
+     * Update E-Wallet (OVO, DANA, ShopeePay)
+     */
+   public function updateEwallet(Request $request)
+{
+    $user = Auth::user();
+    $owner = Owner::where('user_id', $user->id)->first();
+    
+    if (!$owner) {
+        $owner = Owner::create([
+            'user_id' => $user->id,
+            'verification_status' => 'pending',
+        ]);
+    }
+
+    $request->validate([
+        'ewallet_ovo' => 'nullable|string|max:20',
+        'ewallet_dana' => 'nullable|string|max:20',
+        'ewallet_shopeepay' => 'nullable|string|max:20',
+        'qris_ewallet' => 'nullable|string|in:ovo,dana,shopeepay',
+        'qris_image' => 'nullable|image|mimes:png,jpeg,jpg|max:2048',
+    ]);
+
+    $data = [
+        'ewallet_ovo' => $request->ewallet_ovo,
+        'ewallet_dana' => $request->ewallet_dana,
+        'ewallet_shopeepay' => $request->ewallet_shopeepay,
+    ];
+
+    // Update QRIS e-wallet jika ada
+    if ($request->has('qris_ewallet')) {
+        $data['qris_ewallet'] = $request->qris_ewallet;
+    }
+
+    // Upload QRIS Image
+    if ($request->hasFile('qris_image')) {
+        // Hapus QRIS lama jika ada
+        if ($owner->qris_image && Storage::disk('public')->exists($owner->qris_image)) {
+            Storage::disk('public')->delete($owner->qris_image);
+        }
+
+        $file = $request->file('qris_image');
+        $fileName = 'qris_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+        $filePath = $file->storeAs('qris', $fileName, 'public');
+        $data['qris_image'] = $filePath;
+    }
+
+    $owner->update($data);
+
+    return redirect()->route('owner.profile.index')->with('success', 'E-Wallet dan QRIS berhasil diperbarui!');
+}
+
+    /**
      * Update the password.
      */
     public function updatePassword(Request $request)
@@ -173,18 +223,15 @@ class ProfileController extends Controller
             return back()->withErrors(['password' => 'Password tidak sesuai']);
         }
 
-        // Hapus foto jika ada
         if ($user->photo && Storage::disk('public')->exists($user->photo)) {
             Storage::disk('public')->delete($user->photo);
         }
 
-        // Hapus owner record
         $owner = Owner::where('user_id', $user->id)->first();
         if ($owner) {
             $owner->delete();
         }
         
-        // Hapus user
         $user->delete();
         
         Auth::logout();
